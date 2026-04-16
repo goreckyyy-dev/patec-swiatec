@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patec Światec</title>
+    
+    <script src="https://unpkg.com/globe.gl"></script>
+    
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            overflow: hidden; 
+            background-color: #050505; 
+        }
+        #patec-text {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: rgb(255, 0, 0);
+            font-size: 32px;
+            font-weight: bold;
+            z-index: 1000;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+        #kraje-odwiedzone {
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            color: rgb(255, 0, 0);
+            font-size: 24px;
+            z-index: 1000;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+        #kontener-na-globus {
+            position: absolute;
+            inset: 0;
+        }
+        #info-panel {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 320px;
+            max-height: calc(100% - 20px);
+            padding: 18px;
+            background: rgba(10, 10, 10, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: white;
+            overflow-y: auto;
+            z-index: 1001;
+            border-radius: 14px;
+            box-shadow: 0 0 24px rgba(0, 0, 0, 0.6);
+            display: none;
+        }
+        #info-panel.visible {
+            display: block;
+        }
+        #info-panel h2 {
+            margin: 0 0 12px;
+            font-size: 24px;
+        }
+        #info-panel img {
+            width: 100%;
+            display: block;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        #info-panel a {
+            color: #ff0000;
+            text-decoration: none;
+        }
+        #close-panel {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="patec-text">PROGRES ŚWIATA PATECA:</div>
+
+    <div id="kraje-odwiedzone">ODWIEDZONE KRAJE: 0/195</div>
+
+    <div id="info-panel">
+        <button id="close-panel">×</button>
+        <h2 id="info-title">Kliknij kraj</h2>
+        <div id="info-content">
+            <p>Kliknij kraj na globusie, aby zobaczyć informacje tutaj.</p>
+        </div>
+    </div>
+
+    <div id="kontener-na-globus"></div>
+
+    <script>
+        const odwiedzoneKraje = [
+            "Poland", 
+            "Germany", 
+            "United States of America", 
+            "Brazil", 
+            "Japan",
+            "Russia",
+            "United Republic of Tanzania",
+            "Ukraine",
+            "Dominican Republic",
+            "South Africa",
+            "Norway",
+            "Sweden",
+            "Slovakia",
+            "Spain",
+            "Netherlands",
+            "Indonesia",
+            "Oman",
+            "Iceland",
+            "Botswana",
+            "Zimbabwe",
+            "Croatia",
+            "Egypt",
+            "United Kingdom",
+            "Thailand",
+            "Singapore",
+            "Cambodia",
+            "Vietnam",
+            "Latvia",
+            "Lithuania",
+            "India",
+            "Italy",
+            "Mauritania",
+            "Western Sahara",
+            "Israel",
+            "United Arab Emirates"
+        ];
+
+        let najechanyKraj = null;
+        const infoPanel = document.getElementById('info-panel');
+        const infoTitle = document.getElementById('info-title');
+        const infoContent = document.getElementById('info-content');
+        const closePanelButton = document.getElementById('close-panel');
+
+        closePanelButton.addEventListener('click', () => {
+            infoPanel.classList.remove('visible');
+            // Resume auto-rotation when closing the panel
+            mojGlobus.controls().autoRotate = true;
+        });
+
+        const panelData = {
+            Poland: {
+                title: 'Polska',
+                html: `
+                    <p>Odcinki Pateca z Polski:</p>
+                    <a href="https://www.youtube.com/watch?v=_-RH_82RO7Q" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/_-RH_82RO7Q/mqdefault.jpg" alt="JUŻ NIGDY NIE POBRUDZISZ PUPCI">
+                        <p>JUŻ NIGDY NIE POBRUDZISZ PUPCI</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=PU_pKhh1IPU" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/PU_pKhh1IPU/mqdefault.jpg" alt="Nauczyłem się TATUOWAĆ w 7 DNI">
+                        <p>Nauczyłem się TATUOWAĆ w 7 DNI</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=uR43-U_FuFE" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/uR43-U_FuFE/mqdefault.jpg" alt="CHCIAŁEM SIĘ PODDAĆ (MARATON)">
+                        <p>CHCIAŁEM SIĘ PODDAĆ (MARATON)</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=hYvRy5M1hDE" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/hYvRy5M1hDE/mqdefault.jpg" alt="UDEKOROWAŁEM MÓJ DOMEK NA DRZEWIE (VLOGMAS)">
+                        <p>UDEKOROWAŁEM MÓJ DOMEK NA DRZEWIE (VLOGMAS)</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=aZhk5c_mV1A" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/aZhk5c_mV1A/mqdefault.jpg" alt="MÓJ NOWY DOM ft „5 Sposobów na”">
+                        <p>MÓJ NOWY DOM ft „5 Sposobów na”</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=zDg7Nadcv_4" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/zDg7Nadcv_4/mqdefault.jpg" alt="CAŁY DZIEŃ WIDZE TO CO DRON">
+                        <p>CAŁY DZIEŃ WIDZE TO CO DRON</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=WQ9ok487ftQ" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/WQ9ok487ftQ/mqdefault.jpg" alt="WOJNA GRZYBOWA">
+                        <p>WOJNA GRZYBOWA</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=KTn1uasRFLs" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/KTn1uasRFLs/mqdefault.jpg" alt="WYMYŚLILIŚMY NOWY SPORT EKSTREMALNY">
+                        <p>WYMYŚLILIŚMY NOWY SPORT EKSTREMALNY</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=mluE2SN3pqY" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/mluE2SN3pqY/mqdefault.jpg" alt="ZDOBYLIŚMY NAJWYŻSZY SZCZYT POLSKI!">
+                        <p>ZDOBYLIŚMY NAJWYŻSZY SZCZYT POLSKI!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=3iLv0_B81lg" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/3iLv0_B81lg/mqdefault.jpg" alt="ZOSTAŁEM ŁOWCĄ BURZ">
+                        <p>ZOSTAŁEM ŁOWCĄ BURZ</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=7PHki-zuWjE" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/7PHki-zuWjE/mqdefault.jpg" alt="SZUKALIŚMY TEGO "SKARBU" 4 DNI">
+                        <p>SZUKALIŚMY TEGO "SKARBU" 4 DNI</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=cnYoq_Zb5MQ" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/cnYoq_Zb5MQ/mqdefault.jpg" alt="WOJNA KUCHENNA Z MAGDĄ GESSLER">
+                        <p>WOJNA KUCHENNA Z MAGDĄ GESSLER</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=BfOBdRLQrGQ" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/BfOBdRLQrGQ/mqdefault.jpg" alt="Z KRAKOWA DO WARSZAWY NA ROWERZE(FAIL XD)">
+                        <p>Z KRAKOWA DO WARSZAWY NA ROWERZE(FAIL XD)</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=YOZM-uuex9Q" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/YOZM-uuex9Q/mqdefault.jpg" alt="DZIEŃ W NAJDŁUŻSZYCH PODZIEMNYCH BUNKRACH NA SWIECIE!">
+                        <p>DZIEŃ W NAJDŁUŻSZYCH PODZIEMNYCH BUNKRACH NA SWIECIE!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=Np4HhKH1fTE" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/Np4HhKH1fTE/mqdefault.jpg" alt="ARCYMISTRZOWIE MIELI ZE MNĄ PROBLEM!">
+                        <p>ARCYMISTRZOWIE MIELI ZE MNĄ PROBLEM!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=9dr7iafbho4" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/9dr7iafbho4/mqdefault.jpg" alt="Dziękuje">
+                        <p>Dziękuje</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=LNjS8CE5hCg" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/LNjS8CE5hCg/mqdefault.jpg" alt="POJEDYNEK KUCHENNY Z DŻODŻEM">
+                        <p>POJEDYNEK KUCHENNY Z DŻODŻEM</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=teED552S50A" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/teED552S50A/mqdefault.jpg" alt="POSZUKIWANIA W TAJEMNICZYM LESIE">
+                        <p>POSZUKIWANIA W TAJEMNICZYM LESIE</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=CMwtWr5K4IA" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/CMwtWr5K4IA/mqdefault.jpg" alt="TAK WYSOKO JESZCZE NIE BYŁEM">
+                        <p>TAK WYSOKO JESZCZE NIE BYŁEM</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=3QT_Wo0G4fM" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/3QT_Wo0G4fM/mqdefault.jpg" alt="LEKARZ DLA DZIKICH ZWIERZĄT">
+                        <p>LEKARZ DLA DZIKICH ZWIERZĄT</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=duOKUGmiM1k" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/duOKUGmiM1k/mqdefault.jpg" alt="MISTRZOSTWA ŚWIATA W SZACHACH ft. Carlsen, Hikaru">
+                        <p>MISTRZOSTWA ŚWIATA W SZACHACH ft. Carlsen, Hikaru</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=T92HDUse1TM" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/T92HDUse1TM/mqdefault.jpg" alt="NOC 30 METRÓW NAD ZIEMIĄ">
+                        <p>NOC 30 METRÓW NAD ZIEMIĄ</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=IVml7TscOQo" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/IVml7TscOQo/mqdefault.jpg" alt="24H w NOWYM DOMKU NA DRZEWIE">
+                        <p>24H w NOWYM DOMKU NA DRZEWIE</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=ICof_ojILKA" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/ICof_ojILKA/mqdefault.jpg" alt="ZBUDOWAŁEM DOMEK NA DRZEWIE">
+                        <p>ZBUDOWAŁEM DOMEK NA DRZEWIE</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=9z2wh7OkUc4" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/9z2wh7OkUc4/mqdefault.jpg" alt="75 km PIESZO w 24H *GONE WRONGXD*">
+                        <p>75 km PIESZO w 24H *GONE WRONGXD*</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=n4a8z8OFiMU" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/n4a8z8OFiMU/mqdefault.jpg" alt="ZGUBILIŚMY SIĘ W JASKINI">
+                        <p>ZGUBILIŚMY SIĘ W JASKINI</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=D_8ASu_2Rps" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/D_8ASu_2Rps/mqdefault.jpg" alt="STWORZYŁEM SWÓJ MIECZ">
+                        <p>STWORZYŁEM SWÓJ MIECZ</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=EiNTj8nTjbI" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/EiNTj8nTjbI/mqdefault.jpg" alt="TRENING LATANIA Z MISTRZYNIĄ ŚWIATA">
+                        <p>TRENING LATANIA Z MISTRZYNIĄ ŚWIATA</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=GhkSBPxp1xE" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/GhkSBPxp1xE/mqdefault.jpg" alt="NAUCZYŁEM SIĘ PISAĆ DRUGĄ RĘKĄ!">
+                        <p>NAUCZYŁEM SIĘ PISAĆ DRUGĄ RĘKĄ!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=QL1A8rihQW4" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/QL1A8rihQW4/mqdefault.jpg" alt="TO BYŁY NAJGORSZE MOMENTY W MOIM ŻYCIU">
+                        <p>TO BYŁY NAJGORSZE MOMENTY W MOIM ŻYCIU</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=bcp3I6YZRfA" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/bcp3I6YZRfA/mqdefault.jpg" alt="SKOCZYŁEM SAMEMU ZE SPADOCHRONEM!">
+                        <p>SKOCZYŁEM SAMEMU ZE SPADOCHRONEM!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=Ugs_ws-KuNw" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/Ugs_ws-KuNw/mqdefault.jpg" alt="17 LAT CZEKAŁEM NA TEN MOMENT">
+                        <p>17 LAT CZEKAŁEM NA TEN MOMENT</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=WO4dL0mRYzw" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/WO4dL0mRYzw/mqdefault.jpg" alt="TEGO NAUCZYLI MNIE MISTRZOWIE POLSKI">
+                        <p>TEGO NAUCZYLI MNIE MISTRZOWIE POLSKI</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=tBB-knorxuY" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/tBB-knorxuY/mqdefault.jpg" alt="EKIPOWY MECZ PIŁKARSKI ft. Sławomir Peszko">
+                        <p>EKIPOWY MECZ PIŁKARSKI ft. Sławomir Peszko</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=8wnQ2eslpmE" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/8wnQ2eslpmE/mqdefault.jpg" alt="KUCHENNA WOJNA Z MINI MAJKIEM O $$$">
+                        <p>KUCHENNA WOJNA Z MINI MAJKIEM O $$$</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=J6yEN8keTPY" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/J6yEN8keTPY/mqdefault.jpg" alt="NAUCZYŁEM GO SWOICH TALENTÓW">
+                        <p>NAUCZYŁEM GO SWOICH TALENTÓW</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=9ewHhn_E2O8" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/9ewHhn_E2O8/mqdefault.jpg" alt="KUCHENNA WOJNA Z MARCYSIĄ">
+                        <p>KUCHENNA WOJNA Z MARCYSIĄ</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=NJbOQHiAeb4" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/NJbOQHiAeb4/mqdefault.jpg" alt="ODWIEDZIŁEM MAŁPI RAJ!">
+                        <p>ODWIEDZIŁEM MAŁPI RAJ!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=NbfWOEK_PNQ" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/NbfWOEK_PNQ/mqdefault.jpg" alt="NIESAMOWITY TYDZIEŃ Z ŻYCIA JAKUBA PATECKIEGO">
+                        <p>NIESAMOWITY TYDZIEŃ Z ŻYCIA JAKUBA PATECKIEGO</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=ta9vp7pIqHI" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/ta9vp7pIqHI/mqdefault.jpg" alt="KUCHENNA WOJNA Z MURCIX">
+                        <p>KUCHENNA WOJNA Z MURCIX</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=sTzVsy17mgU" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/sTzVsy17mgU/mqdefault.jpg" alt="ZAWSZE CHCIAŁEM TO ZROBIĆ... (FINAŁ ODC. 2)">
+                        <p>ZAWSZE CHCIAŁEM TO ZROBIĆ... (FINAŁ ODC. 2)</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=H0WnphWliiM" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/H0WnphWliiM/mqdefault.jpg" alt="TEST POPULARNYCH BATONÓW">
+                        <p>TEST POPULARNYCH BATONÓW</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=RjZ_C9IsMJE" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/RjZ_C9IsMJE/mqdefault.jpg" alt="KUCHENNA WOJNA Z WERSOW">
+                        <p>KUCHENNA WOJNA Z WERSOW</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=_rP6buivtFc" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/_rP6buivtFc/mqdefault.jpg" alt="JAKIEGO EKIPOWICZA PRZEDSTAWIAM?">
+                        <p>JAKIEGO EKIPOWICZA PRZEDSTAWIAM?</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=AUW5begy5gY" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/AUW5begy5gY/mqdefault.jpg" alt="SPRAWDZAMY KTO JEST NAJSILNIEJSZY Z EKIPY">
+                        <p>SPRAWDZAMY KTO JEST NAJSILNIEJSZY Z EKIPY</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=yrKYdpEgESY" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/yrKYdpEgESY/mqdefault.jpg" alt="NOC W CHOINCE">
+                        <p>NOC W CHOINCE</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=FM8x8ES1-H0" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/FM8x8ES1-H0/mqdefault.jpg" alt="OTO NOWA CZĘŚĆ DOMU EKIPY!">
+                        <p>OTO NOWA CZĘŚĆ DOMU EKIPY!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=kw_eH84qp2s" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/kw_eH84qp2s/mqdefault.jpg" alt="NAJPIĘKNIEJSZY prezent jaki dałem EKIPOWICZOWI">
+                        <p>NAJPIĘKNIEJSZY prezent jaki dałem EKIPOWICZOWI</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=smy_txqvydQ" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/smy_txqvydQ/mqdefault.jpg" alt="VLOGMAS: Świąteczny poradnik PATECA">
+                        <p>VLOGMAS: Świąteczny poradnik PATECA</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=EvyqhdDmNQ4" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/EvyqhdDmNQ4/mqdefault.jpg" alt="KUCHENNA WOJNA Z NOWCIAXEM">
+                        <p>KUCHENNA WOJNA Z NOWCIAXEM</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=FRVdQaJgq9k" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/FRVdQaJgq9k/mqdefault.jpg" alt="Największy IMPOSTOR w EKIPIE?">
+                        <p>Największy IMPOSTOR w EKIPIE?</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=sTKvKvpsI2A" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/sTKvKvpsI2A/mqdefault.jpg" alt="Sprawdzamy z EKIPĄ KefirX">
+                        <p>„Sprawdzamy z EKIPĄ KefirX”</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=U7A9Ia-_bZE" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/U7A9Ia-_bZE/mqdefault.jpg" alt="„SEKRETY Z DZIECIŃSTWA O KTÓRYCH NIE WIEDZIELIŚCIE”">
+                        <p>„SEKRETY Z DZIECIŃSTWA O KTÓRYCH NIE WIEDZIELIŚCIE”</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=DESQ-SU5RdU" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/DESQ-SU5RdU/mqdefault.jpg" alt="„JAK ZAPAMIĘTAĆ WSZYSTKO *challenge xd*">
+                        <p>„JAK ZAPAMIĘTAĆ WSZYSTKO *challenge xd*</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=S1HIAWNsYR8" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/S1HIAWNsYR8/mqdefault.jpg" alt="„szybciuteńka nauka TAILWHIPA na hulajnodze">
+                        <p>szybciuteńka nauka TAILWHIPA na hulajnodze</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=GvIzM6XGllk" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/GvIzM6XGllk/mqdefault.jpg" alt="„DZIARA” na całą nogę!">
+                        <p>„DZIARA” na całą nogę!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=qKFOFlS3uqg" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/qKFOFlS3uqg/mqdefault.jpg" alt="NAUKA FRONTFLIPA">
+                        <p>NAUKA FRONTFLIPA</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=43FhlPm5B0Y" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/43FhlPm5B0Y/mqdefault.jpg" alt="UKŁADAM KOSTKĘ PONIŻEJ 1 MINUTY">
+                        <p>UKŁADAM KOSTKĘ PONIŻEJ 1 MINUTY</p>
+                    </a>
+
+                    <a href="https://www.youtube.com/watch?v=3rCWj3SseOI" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/3rCWj3SseOI/mqdefault.jpg" alt="KASIULA UCZY MNIE JAZDY KONNO">
+                        <p>KASIULA UCZY MNIE JAZDY KONNO</p>
+                    <a href="https://www.youtube.com/watch?v=2Wd0j8SAUPo" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/2Wd0j8SAUPo/mqdefault.jpg" alt="PEKSPRESOWA NAUKA BACKFLIPA">
+                        <p>EKSPRESOWA NAUKA BACKFLIPA</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=VyXPZjG2nFc" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/VyXPZjG2nFc/mqdefault.jpg" alt="OD 0 DO SKATERA W 12 DNI!">
+                       
+                        <p>OD 0 DO SKATERA W 12 DNI!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=uvCPIMTl50Q" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/uvCPIMTl50Q/mqdefault.jpg" alt="PATEC WARIATEC OTWIERA KANAŁ!">
+                        <p>PATEC WARIATEC OTWIERA KANAŁ!</p>
+                    </a>
+                `
+            },
+            Germany: {
+                title: 'Niemcy',
+                html: `
+                    <p>Odcinki Pateca z Niemiec:</p>
+                    <a href="https://www.youtube.com/watch?v=9fA2Sd1uJZw" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/9fA2Sd1uJZw/mqdefault.jpg" alt="MIAŁEM TYLKO GODZINĘ ABY WYDOSTAĆ SIĘ Z BUNKRA...">
+                        <p>MIAŁEM TYLKO GODZINĘ ABY WYDOSTAĆ SIĘ Z BUNKRA...</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=ELM22wNca-M" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/ELM22wNca-M/mqdefault.jpg" alt="24h W OPUSZCZONYM KOMPLEKSIE WOJSKOWYM">
+                        <p>24h W OPUSZCZONYM KOMPLEKSIE WOJSKOWYM</p>
+                    </a>
+                `
+            },
+            'United States of America': {
+                title: 'Stany Zjednoczone',
+                html: `
+                    <p>Odcinki Pateca z USA:</p>
+                    <a href="https://www.youtube.com/watch?v=KumljIILOZY" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/KumljIILOZY/mqdefault.jpg" alt="KUCHENNA WOJNA Z NOWCIAXEM">
+                        <p>KUCHENNA WOJNA Z NOWCIAXEM</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=FxAxIPAT3s0" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/FxAxIPAT3s0/mqdefault.jpg" alt="A TO PECH">
+                        <p>A TO PECH</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=H4WpON-eYzY" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/H4WpON-eYzY/mqdefault.jpg" alt="OGROMNY STATEK KOSMICZNY">
+                        <p>OGROMNY STATEK KOSMICZNY</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=XzS3Hctfvrk" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/XzS3Hctfvrk/mqdefault.jpg" alt="ZAGRALIŚMY Z JANKOSEM!!!">
+                        <p>ZAGRALIŚMY Z JANKOSEM!!!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=6Jmo8W6_g44" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/6Jmo8W6_g44/mqdefault.jpg" alt="TO BYŁ NAJLEPSZY EVENT NA JAKIM BYŁEM">
+                        <p>TO BYŁ NAJLEPSZY EVENT NA JAKIM BYŁEM</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=vE2DNvFIFD0" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/vE2DNvFIFD0/mqdefault.jpg" alt="POLECIELIŚMY DO STANÓW!">
+                        <p>POLECIELIŚMY DO STANÓW!</p>
+                    </a>
+                `
+            },
+            Brazil: {
+                title: 'Brazylia',
+                html: `
+                    <p>Odcinki Pateca z Brazylii:</p>
+                    <a href="https://www.youtube.com/watch?v=ysz5S6PUM-U" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/ysz5S6PUM-U/mqdefault.jpg" alt="Video o Brazylii">
+                        <p>Otwórz film o Brazylii</p>
+                    </a>
+                `
+            },
+            Japan: {
+                title: 'Japonia',
+                html: `
+                    <p>Odcinki Pateca z Japonii:</p>
+                    <a href="https://www.youtube.com/watch?v=VYOjWnS4cMY" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/VYOjWnS4cMY/mqdefault.jpg" alt="Video o Japonii">
+                        <p>Otwórz film o Japonii</p>
+                    </a>
+                `
+            },
+            Russia: {
+                title: 'Rosja',
+                html: `
+                    <p>Odcinki Pateca z Rosji:</p>
+                    <a href="https://www.youtube.com/watch?v=tVj0ZTS4WF4" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/tVj0ZTS4WF4/mqdefault.jpg" alt="Video o Rosji">
+                        <p>Otwórz film o Rosji</p>
+                    </a>
+                `
+            },
+            'United Republic of Tanzania': {
+                title: 'Tanzania',
+                html: `
+                    <p>Odcinki Pateca z Tanzanii:</p>
+                    <a href="https://www.youtube.com/watch?v=h8eT0fy3ay4" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/h8eT0fy3ay4/mqdefault.jpg" alt="FRYZJER W AFRYCE ZA 2$ (cz.2/2)">
+                        <p>FRYZJER W AFRYCE ZA 2$ (cz.2/2)</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=pWPyC-cwbDQ" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/pWPyC-cwbDQ/mqdefault.jpg" alt="PRÓBOWAŁEM SPĘDZIĆ 24H SAMEMU W AFRYCE część 1/2">
+                        <p>PRÓBOWAŁEM SPĘDZIĆ 24H SAMEMU W AFRYCE część 1/2</p>
+                    </a>
+                `
+            },
+            'Ukraine': {
+                title: 'Ukraina',
+                html: `
+                    <p>Odcinki Pateca z Ukrainy:</p>
+                    <a href="https://www.youtube.com/watch?v=LSBIHExU3V0" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/LSBIHExU3V0/mqdefault.jpg" alt="GRILL W KANAŁACH KIJOWA!">
+                        <p>GRILL W KANAŁACH KIJOWA!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=Y2JVA6U1J5g" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/Y2JVA6U1J5g/mqdefault.jpg" alt="TEN PRZYCISK MÓGŁ ZNISZCZYĆ ŚWIAT">
+                        <p>TEN PRZYCISK MÓGŁ ZNISZCZYĆ ŚWIAT</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=T210X_RMc_E" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/T210X_RMc_E/mqdefault.jpg" alt="MOJA NAJNIEBEZPIECZNIEJSZA WYPRAWA">
+                        <p>MOJA NAJNIEBEZPIECZNIEJSZA WYPRAWA</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=2jYwoLPolv0" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/2jYwoLPolv0/mqdefault.jpg" alt="ZWIEDZIŁEM OPUSZCZONE MIASTO NA UKRAINIE!">
+                        <p>ZWIEDZIŁEM OPUSZCZONE MIASTO NA UKRAINIE!</p>
+                    </a>
+                `
+            },
+            'Dominican Republic': {
+                title: 'Dominikana',
+                html: `
+                    <p>Odcinki Pateca z Dominikany:</p>
+                    <a href="https://www.youtube.com/watch?v=oZgg4abnG-E" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/oZgg4abnG-E/mqdefault.jpg" alt="ZOSTAŁEM ZATRZYMANY PRZEZ ŻOŁNIERZA">
+                        <p>ZOSTAŁEM ZATRZYMANY PRZEZ ŻOŁNIERZA</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=WdIHNoHK-SU" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/WdIHNoHK-SU/mqdefault.jpg" alt="24H SAMEMU NA KARAIBACH! cz.1/2">
+                        <p>24H SAMEMU NA KARAIBACH! cz.1/2</p>
+                    </a>
+                `
+            },
+            'South Africa': {
+                title: 'RPA',
+                html: `
+                    <p>Odcinki Pateca z RPA:</p>
+                    <a href="https://www.youtube.com/watch?v=WNVm1fcIwu0" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/WNVm1fcIwu0/mqdefault.jpg" alt="OTRZYMAŁEM TO NA KONIEC WYPRAWY…">
+                        <p>OTRZYMAŁEM TO NA KONIEC WYPRAWY…</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=Pr5LPkp7SLE" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/Pr5LPkp7SLE/mqdefault.jpg" alt="24h W BUSZU">
+                        <p>24h W BUSZU</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=-jUFDL9pVqc" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/-jUFDL9pVqc/mqdefault.jpg" alt="ODWIEDZIŁEM ŁOWCĘ KŁUSOWNIKÓW">
+                        <p>ODWIEDZIŁEM ŁOWCĘ KŁUSOWNIKÓW</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=xWPMk_m4r6s" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/xWPMk_m4r6s/mqdefault.jpg" alt="WYPRAWA W GÓRY SMOCZE">
+                        <p>WYPRAWA W GÓRY SMOCZE</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=S8P5B5Uq6bs" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/S8P5B5Uq6bs/mqdefault.jpg" alt="POKECENTER DLA ZWIERZĄT!">
+                        <p>POKECENTER DLA ZWIERZĄT!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=HVwdcuG6YM4" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/HVwdcuG6YM4/mqdefault.jpg" alt="ZAWODY W PLUCIU KUPĄ NA ODLEGŁOŚĆ">
+                        <p>ZAWODY W PLUCIU KUPĄ NA ODLEGŁOŚĆ</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=3V0IrLSDPYY" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/3V0IrLSDPYY/mqdefault.jpg" alt="ZOBACZYŁEM POLOWANIE DZIKICH ZWIERZĄT">
+                        <p>ZOBACZYŁEM POLOWANIE DZIKICH ZWIERZĄT</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=3ZEwFuvNsF0" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/3ZEwFuvNsF0/mqdefault.jpg" alt="24h W NAJNIEBEZPIECZNIEJSZYM MIEŚCIE W AFRYCE">
+                        <p>24h W NAJNIEBEZPIECZNIEJSZYM MIEŚCIE W AFRYCE</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=r7wb4IX-AV8" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/r7wb4IX-AV8/mqdefault.jpg" alt="NAJLEPSZY VS NAJGORSZY HOTEL W STOLICY RPA">
+                        <p>NAJLEPSZY VS NAJGORSZY HOTEL W STOLICY RPA</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=Og_s5XZfACQ" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/Og_s5XZfACQ/mqdefault.jpg" alt="ZJADŁEM LODY Z PINGWINAMI!">
+                        <p>ZJADŁEM LODY Z PINGWINAMI!</p>
+                    </a>
+                `
+            },
+            Norway: {
+                title: 'Norwegia',
+                html: `
+                    <p>Odcinki Pateca z Norwegii:</p>
+                    <a href="https://www.youtube.com/watch?v=RNnYUT2QlOY" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/RNnYUT2QlOY/mqdefault.jpg" alt="TO MUSIAŁO BOLEĆ">
+                        <p>TO MUSIAŁO BOLEĆ</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=pWAuP-idIf4" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/pWAuP-idIf4/mqdefault.jpg" alt="PRZECENIŁEM SWOJE MOŻLIWOŚCI...">
+                        <p>PRZECENIŁEM SWOJE MOŻLIWOŚCI...</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=i2PwTRuIIdw" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/i2PwTRuIIdw/mqdefault.jpg" alt="SPOTKALIŚMY SZALONYCH NORWEGÓW!">
+                        <p>SPOTKALIŚMY SZALONYCH NORWEGÓW!</p>
+                    </a>
+                `
+            },
+            Sweden: {
+                title: 'Szwecja',
+                html: `
+                    <p>Odcinki Pateca ze Szwecji:</p>
+                    <a href="https://www.youtube.com/watch?v=QvzksFogcxg" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/QvzksFogcxg/mqdefault.jpg" alt="JEDLIŚMY TO CO ZNALEŹLIŚMY W LESIE">
+                        <p>JEDLIŚMY TO CO ZNALEŹLIŚMY W LESIE</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=FPQxk-qc_to" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/FPQxk-qc_to/mqdefault.jpg" alt="24H bez pieniędzy">
+                        <p>24H bez pieniędzy</p>
+                    </a>
+                `
+            },
+            Slovakia: {
+                title: 'Słowacja',
+                html: `
+                    <p>Odcinki Pateca ze Słowacji:</p>
+                    <a href="https://www.youtube.com/watch?v=9z2wh7OkUc4" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/9z2wh7OkUc4/mqdefault.jpg" alt="75 km PIESZO w 24H *GONE WRONGXD*">
+                        <p>75 km PIESZO w 24H *GONE WRONGXD*</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=hWUB27wpG74" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/hWUB27wpG74/mqdefault.jpg" alt="NIE PATRZ W DÓŁ!">
+                        <p>NIE PATRZ W DÓŁ!</p>
+                    </a>
+                `
+            },
+                Spain: {
+                title: 'Hiszpania',
+                html: `
+                    <p>Odcinki Pateca z Hiszpanii:</p>
+                    <a href="https://www.youtube.com/watch?v=uR43-U_FuFE" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/uR43-U_FuFE/mqdefault.jpg" alt="CHCIAŁEM SIĘ PODDAĆ (MARATON)">
+                        <p>CHCIAŁEM SIĘ PODDAĆ (MARATON)</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=89C2CiW88BE" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/89C2CiW88BE/mqdefault.jpg" alt="MÓJ NAJBARDZIEJ PECHOWY WYJAZD W ŻYCIU">
+                        <p>MÓJ NAJBARDZIEJ PECHOWY WYJAZD W ŻYCIU</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=GIk2jULgV2s" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/GIk2jULgV2s/mqdefault.jpg" alt="NOC W OPUSZCZONYM DWORZE!">
+                        <p>NOC W OPUSZCZONYM DWORZE!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=wHSYcBi3p5U" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/wHSYcBi3p5U/mqdefault.jpg" alt="WSPINANIE W SKAŁACH!">
+                        <p>WSPINANIE W SKAŁACH!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=8nRGstjMCKA" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/8nRGstjMCKA/mqdefault.jpg" alt="ZDALIŚMY EGZAMIN SPADOCHRONOWY!">
+                        <p>ZDALIŚMY EGZAMIN SPADOCHRONOWY!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=HdoJsWy_oHE" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/HdoJsWy_oHE/mqdefault.jpg" alt="24h w BARCELONIE">
+                        <p>24h w BARCELONIE</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=x7Jr5E29zCU" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/x7Jr5E29zCU/mqdefault.jpg" alt="EKSTREMALNE WAKACJE">
+                        <p>EKSTREMALNE WAKACJE</p>
+                    </a>
+                `
+            },
+            Netherlands: {
+                title: 'Holandia',
+                html: `
+                    <p>Odcinki Pateca z Holandii:</p>
+                    <a href="https://www.youtube.com/watch?v=F3hr0Q1ka_g" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/F3hr0Q1ka_g/mqdefault.jpg" alt="AMSTERDAM 💨">
+                        <p>AMSTERDAM 💨</p>
+                    </a>
+                `
+            },
+            Iceland: {
+                title: 'Islandia',
+                html: `
+                    <p>Odcinki Pateca z Islandii:</p>
+                    <a href="https://www.youtube.com/watch?v=vLmWT0KBhPE" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/vLmWT0KBhPE/mqdefault.jpg" alt="ZROBILIŚMY GRILLA NA WULKANIE">
+                        <p>ZROBILIŚMY GRILLA NA WULKANIE</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=RY9bAAoTipM" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/RY9bAAoTipM/mqdefault.jpg" alt="HOUSTON MAMY PROBLEM!">
+                        <p>HOUSTON MAMY PROBLEM!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=wfXA9wN8Sj0" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/wfXA9wN8Sj0/mqdefault.jpg" alt="PŁYWALIŚMY W LODOWATEJ WODZIE">
+                        <p>PŁYWALIŚMY W LODOWATEJ WODZIE</p>
+                    </a>
+                `
+            },
+            Botswana: {
+                title: 'Botswana',
+                html: `
+                    <p>Odcinki Pateca z Botswany:</p>
+                    <a href="https://www.youtube.com/watch?v=DFc4-R79ki4" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/DFc4-R79ki4/mqdefault.jpg" alt="FRYZJER W BOTSWANIE :C">
+                        <p>FRYZJER W BOTSWANIE :C</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=Z3rDQfElvlA" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/Z3rDQfElvlA/mqdefault.jpg" alt="INTRUZI W OBOZIE">
+                        <p>INTRUZI W OBOZIE</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=e9D8WJ6OpNM" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/e9D8WJ6OpNM/mqdefault.jpg" alt="WOJNA KUCHENNA Z FRIZEM">
+                        <p>WOJNA KUCHENNA Z FRIZEM</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=jST73_FNLLE" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/jST73_FNLLE/mqdefault.jpg" alt="ŁOWILIŚMY RYBY AFRYKAŃSKIM SPOSOBEM!">
+                        <p>ŁOWILIŚMY RYBY AFRYKAŃSKIM SPOSOBEM!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=GKntdV9bEew" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/GKntdV9bEew/mqdefault.jpg" alt="24h w OBOZIE SZKOLENIOWYM">
+                        <p>24h w OBOZIE SZKOLENIOWYM</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=xy0OrAqKo6E" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/xy0OrAqKo6E/mqdefault.jpg" alt="ODWIEDZILIŚMY LOKALNĄ WIOSKĘ">
+                        <p>ODWIEDZILIŚMY LOKALNĄ WIOSKĘ</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=dFIxIzJdmbQ" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/dFIxIzJdmbQ/mqdefault.jpg" alt="POLECIELIŚMY DO DZIKIEJ BOTSWANY!">
+                        <p>POLECIELIŚMY DO DZIKIEJ BOTSWANY!</p>
+                    </a>
+                `
+            },
+            Zimbabwe: {
+                title: 'Zimbabwe',
+                html: `
+                    <p>Odcinki Pateca z Zimbabwe:</p>
+                    <a href="https://www.youtube.com/watch?v=JBHV1nkMY9g" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/JBHV1nkMY9g/mqdefault.jpg" alt="DZIEŃ Z JEDNOSTKĄ ANTYKŁUSOWNICZĄ">
+                        <p>DZIEŃ Z JEDNOSTKĄ ANTYKŁUSOWNICZĄ</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=wkuq01kaLJs" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/wkuq01kaLJs/mqdefault.jpg" alt="EKSTREMALNE ATRAKCJE ZIMBABWE">
+                        <p>EKSTREMALNE ATRAKCJE ZIMBABWE</p>
+                    </a>
+                `
+            },
+            Croatia: {
+                title: 'Chorwacja',
+                html: `
+                    <p>Odcinki Pateca z Chorwacji:</p>
+                    <a href="https://www.youtube.com/watch?v=1lrWwqyFQNo" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/1lrWwqyFQNo/mqdefault.jpg" alt="DZIEŃ NA OPUSZCZONEJ WYSPIE">
+                        <p>DZIEŃ NA OPUSZCZONEJ WYSPIE</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=S9ZYvUTObIc" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/S9ZYvUTObIc/mqdefault.jpg" alt="WODNA TAKSÓWKA W CHORWACJI!">
+                        <p>WODNA TAKSÓWKA W CHORWACJI!</p>
+                    </a>
+                `
+            },
+                Egypt: {
+                    title: 'Egipt',
+                    html: `
+                        <p>Odcinki Pateca z Egiptu:</p>
+                        <a href="https://www.youtube.com/watch?v=MKIn419wS7g" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/MKIn419wS7g/mqdefault.jpg" alt="PRAWIE SIĘ PODDALIŚMY!">
+                            <p>PRAWIE SIĘ PODDALIŚMY!</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=5qQ_FnTkEQ4" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/5qQ_FnTkEQ4/mqdefault.jpg" alt="ZROBIŁEM KURS NURKOWANIA">
+                            <p>ZROBIŁEM KURS NURKOWANIA</p>
+                        </a>
+                    `
+                },
+                'United Kingdom': {
+                    title: 'Wielka Brytania',
+                    html: `
+                        <p>Odcinki Pateca z Wielkiej Brytanii:</p>
+                        <a href="https://www.youtube.com/watch?v=j40AEctyOtw" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/j40AEctyOtw/mqdefault.jpg" alt="STRACIŁEM 7000 zł W TEJ JASKINI">
+                            <p>STRACIŁEM 7000 zł W TEJ JASKINI</p>
+                        </a>
+                    `
+                },
+                Thailand: {
+                    title: 'Tajlandia',
+                    html: `
+                        <p>Odcinki Pateca z Tajlandii:</p>
+                        <a href="https://www.youtube.com/watch?v=6D9xy3QrtZg" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/6D9xy3QrtZg/mqdefault.jpg" alt="NAGRAŁA ZE MNĄ FILM!!!">
+                            <p>NAGRAŁA ZE MNĄ FILM!!!</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=4PO7hSl93js" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/4PO7hSl93js/mqdefault.jpg" alt="TRENING BRUTALNEGO MUAY THAI">
+                            <p>TRENING BRUTALNEGO MUAY THAI</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=bHMfIIeZe-Y" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/bHMfIIeZe-Y/mqdefault.jpg" alt="AZJATYCKA LEKCJA GOTOWANIA">
+                            <p>AZJATYCKA LEKCJA GOTOWANIA</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=pUMA-yUyTzE" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/pUMA-yUyTzE/mqdefault.jpg" alt="NAJNIEBEZPIECZNIEJSZY RYNEK NA ŚWIECIE">
+                            <p>NAJNIEBEZPIECZNIEJSZY RYNEK NA ŚWIECIE</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=Dre_4qRZ6TY" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/Dre_4qRZ6TY/mqdefault.jpg" alt="NIE WYKONAŁEM TEGO ZADANIA">
+                            <p>NIE WYKONAŁEM TEGO ZADANIA</p>
+                        </a>
+                    `
+                },
+                Singapore: {
+                    title: 'Singapur',
+                    html: `
+                        <p>Odcinki Pateca z Singapuru:</p>
+                        <a href="https://www.youtube.com/watch?v=UoaPsy8PpxE" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/UoaPsy8PpxE/mqdefault.jpg" alt="NOC W HOTELU KAPSUŁOWYM">
+                            <p>NOC W HOTELU KAPSUŁOWYM</p>
+                        </a>
+                    `
+                },
+                Cambodia: {
+                    title: 'Kambodża',
+                    html: `
+                        <p>Odcinki Pateca z Kambodży:</p>
+                        <a href="https://www.youtube.com/watch?v=a8aA3x1a4tQ" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/a8aA3x1a4tQ/mqdefault.jpg" alt="ZŁAPAŁA MNIE POLICJA W KAMBODŻY">
+                            <p>ZŁAPAŁA MNIE POLICJA W KAMBODŻY</p>
+                        </a>
+                    `
+                },
+                Vietnam: {
+                    title: 'Wietnam',
+                    html: `
+                        <p>Odcinki Pateca z Wietnamu:</p>
+                        <a href="https://www.youtube.com/watch?v=Rk67nMpJZhQ" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/Rk67nMpJZhQ/mqdefault.jpg" alt="NAJTAŃSZY VS NAJDROŻSZY HOTEL W WIETNAMIE!">
+                            <p>NAJTAŃSZY VS NAJDROŻSZY HOTEL W WIETNAMIE!</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=bRiVfpc18Qc" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/bRiVfpc18Qc/mqdefault.jpg" alt="BYŁO NAPRAWDĘ CIASNO">
+                            <p>BYŁO NAPRAWDĘ CIASNO</p>
+                        </a>
+                    `
+                },
+                Latvia: {
+                    title: 'Łotwa',
+                    html: `
+                        <p>Odcinki Pateca z Łotwy:</p>
+                        <a href="https://www.youtube.com/watch?v=CB6_e7DI3XQ" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/CB6_e7DI3XQ/mqdefault.jpg" alt="SPĘDZIŁEM NOC W WIĘZIENIU">
+                            <p>SPĘDZIŁEM NOC W WIĘZIENIU</p>
+                        </a>
+                    `
+                },
+                Lithuania: {
+                    title: 'Litwa',
+                    html: `
+                        <p>Odcinki Pateca z Litwy:</p>
+                        <a href="https://www.youtube.com/watch?v=CB6_e7DI3XQ" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/CB6_e7DI3XQ/mqdefault.jpg" alt="SPĘDZIŁEM NOC W WIĘZIENIU">
+                            <p>SPĘDZIŁEM NOC W WIĘZIENIU</p>
+                        </a>
+                    `
+                },
+                Italy: {
+                    title: 'Włochy',
+                    html: `
+                        <p>Odcinki Pateca z Włoch:</p>
+                        <a href="https://www.youtube.com/watch?v=znLs_gflWFk" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/znLs_gflWFk/mqdefault.jpg" alt="INSTAGRAM DECYDUJE O NASZEJ PODRÓŻY">
+                            <p>INSTAGRAM DECYDUJE O NASZEJ PODRÓŻY</p>
+                        </a>
+                    `
+                },
+                Mauritania: {
+                    title: 'Mauretania',
+                    html: `
+                        <p>Odcinki Pateca z Mauretanii:</p>
+                        <a href="https://www.youtube.com/watch?v=XbHFw9lEY-4" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/XbHFw9lEY-4/mqdefault.jpg" alt="NOC NA SAHARZE">
+                            <p>NOC NA SAHARZE</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=d2hbGZVWa4I" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/d2hbGZVWa4I/mqdefault.jpg" alt="ZAPROSIŁ MNIE DO PAŁACU">
+                            <p>ZAPROSIŁ MNIE DO PAŁACU</p>
+                        </a>
+                    `
+                },
+                'Western Sahara': {
+                    title: 'Sahara Zachodnia',
+                    html: `
+                        <p>Odcinki Pateca z Sahary Zachodniej:</p>
+                        <a href="https://www.youtube.com/watch?v=UizOp677Ric" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/UizOp677Ric/mqdefault.jpg" alt="NAJNIEBEZPIECZNIEJSZY POCIĄG ŚWIATA (17h przez Sahare)">
+                            <p>NAJNIEBEZPIECZNIEJSZY POCIĄG ŚWIATA (17h przez Sahare)</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=XbHFw9lEY-4" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/XbHFw9lEY-4/mqdefault.jpg" alt="NOC NA SAHARZE">
+                            <p>NOC NA SAHARZE</p>
+                        </a>
+                    `
+                },
+                Israel: {
+                    title: 'Izrael',
+                    html: `
+                        <p>Odcinki Pateca z Izraela:</p>
+                        <a href="https://www.youtube.com/watch?v=WhZwDedn6gM" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/WhZwDedn6gM/mqdefault.jpg" alt="W TYM KRAJU TO NIELEGALNE - 80DDŚ #6">
+                            <p>W TYM KRAJU TO NIELEGALNE - 80DDŚ #6</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=hfcurSYcX2Q" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/hfcurSYcX2Q/mqdefault.jpg" alt="PRZENOCOWAŁA MNIE ZA DARMO - 80DDŚ #5">
+                            <p>PRZENOCOWAŁA MNIE ZA DARMO - 80DDŚ #5</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=G7-U7JgRFAM" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/G7-U7JgRFAM/mqdefault.jpg" alt="UGOŚCIŁ NAS MILIONER! - 80DDŚ #4">
+                            <p>UGOŚCIŁ NAS MILIONER! - 80DDŚ #4</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=ZMWzV62ra1s" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/ZMWzV62ra1s/mqdefault.jpg" alt="MUSIAŁEM ZAWRÓCIĆ - 80DDŚ #3">
+                            <p>MUSIAŁEM ZAWRÓCIĆ - 80DDŚ #3</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=S4Dnmgp0qG4" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/S4Dnmgp0qG4/mqdefault.jpg" alt="PODZIEMNE MIASTO W IZRAELU - 80DDŚ #2">
+                            <p>PODZIEMNE MIASTO W IZRAELU - 80DDŚ #2</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=AzboLlM7s8I" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/AzboLlM7s8I/mqdefault.jpg" alt="W 80 DNI DOOKOŁA ŚWIATA! - 80DDŚ #1">
+                            <p>W 80 DNI DOOKOŁA ŚWIATA! - 80DDŚ #1</p>
+                        </a>
+                    `
+                },
+                'United Arab Emirates': {
+                    title: 'Zjednoczone Emiraty Arabskie',
+                    html: `
+                        <p>Odcinki Pateca z Zjednoczonych Emiratów Arabskich:</p>
+                       <a href="https://www.youtube.com/watch?v=WhZwDedn6gM" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/WhZwDedn6gM/mqdefault.jpg" alt="W TYM KRAJU TO NIELEGALNE - 80DDŚ #6">
+                            <p>W TYM KRAJU TO NIELEGALNE - 80DDŚ #6</p>
+                        </a>
+                    `
+                },
+                Oman: {
+                    title: 'Oman',
+                    html: `
+                        <p>Odcinki Pateca z Omanu:</p>
+                        <a href="https://www.youtube.com/watch?v=ZDNBr6b6ZdA" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/ZDNBr6b6ZdA/mqdefault.jpg" alt="NIESPODZIANKA - 80DDŚ #9">
+                            <p>NIESPODZIANKA - 80DDŚ #9</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=1kuOYPWlhic" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/1kuOYPWlhic/mqdefault.jpg" alt="Zdobyłem NAJWYŻSZY SZCZYT OMANU! - 80 DDŚ #8">
+                            <p>Zdobyłem NAJWYŻSZY SZCZYT OMANU! - 80 DDŚ #8</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=CKNMO2jWon8" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/CKNMO2jWon8/mqdefault.jpg" alt="ZMIOTŁO MNIE Z PLANSZY - 80DDŚ #7">
+                            <p>ZMIOTŁO MNIE Z PLANSZY - 80DDŚ #7</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=WhZwDedn6gM" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/WhZwDedn6gM/mqdefault.jpg" alt="W TYM KRAJU TO NIELEGALNE - 80DDŚ #6">
+                            <p>W TYM KRAJU TO NIELEGALNE - 80DDŚ #6</p>
+                        </a>
+                    `
+                },
+                India: {
+                    title: 'Indie',
+                    html: `
+                        <p>Odcinki Pateca z Indii:</p>
+                        <a href="https://www.youtube.com/watch?v=xuazvfW_-gY" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/xuazvfW_-gY/mqdefault.jpg" alt="WIOSKA HⱯƧHꓵ - 80 DDŚ #21">
+                            <p>WIOSKA HⱯƧHꓵ - 80 DDŚ #21</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=owEM0WqYQ30" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/owEM0WqYQ30/mqdefault.jpg" alt="ZAGINIONA WIOSKA SZACHÓW - 80 DDŚ #20">
+                            <p>ZAGINIONA WIOSKA SZACHÓW - 80 DDŚ #20</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=525bE49FGWA" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/525bE49FGWA/mqdefault.jpg" alt="ŻYCIE W SLUMSACH - 80 DDŚ #19">
+                            <p>ŻYCIE W SLUMSACH - 80 DDŚ #19</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=C6qzFPAja_Y" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/C6qzFPAja_Y/mqdefault.jpg" alt="HINDUSKIE WESELE - 80 DDŚ #18">
+                            <p>HINDUSKIE WESELE - 80 DDŚ #18</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=NcVVX3tuKwk" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/NcVVX3tuKwk/mqdefault.jpg" alt="TEGO SIE NIE SPODZIEWAŁEM XD - 80 DDŚ #17">
+                            <p>TEGO SIE NIE SPODZIEWAŁEM XD - 80 DDŚ #17</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=rIIMR0QSEyA" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/rIIMR0QSEyA/mqdefault.jpg" alt="MUSIAŁEM WYGŁOSIĆ PRZEMÓWIENIE - 80 DDŚ #16">
+                            <p>MUSIAŁEM WYGŁOSIĆ PRZEMÓWIENIE - 80 DDŚ #16</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=x0GPxFdg3Ug" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/x0GPxFdg3Ug/mqdefault.jpg" alt="FRYZJER ZA 10 ZŁ w INDIACH - 80 DDŚ #15">
+                            <p>FRYZJER ZA 10 ZŁ w INDIACH - 80 DDŚ #15</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=y1z2UYZGzzw" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/y1z2UYZGzzw/mqdefault.jpg" alt="POSZUKIWANIA TYGRYSA BENGALSKIEGO W INDIACH - 80 DDŚ #14">
+                            <p>POSZUKIWANIA TYGRYSA BENGALSKIEGO W INDIACH - 80 DDŚ #14</p>
+                        </a>
+                    <a href="https://www.youtube.com/watch?v=UHx11kFaLOE" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/UHx11kFaLOE/mqdefault.jpg" alt="POTYCZKA INDYJSKA xD... - 80 DDŚ #13">
+                        <p>POTYCZKA INDYJSKA xD... - 80 DDŚ #13</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=kCNbdWDZ4Bk" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/kCNbdWDZ4Bk/mqdefault.jpg" alt="ZOSTAŁEM OSZUKANY- 80 DDŚ #12">
+                        <p>ZOSTAŁEM OSZUKANY- 80 DDŚ #12</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=h-Z4slR6OJM" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/h-Z4slR6OJM/mqdefault.jpg" alt="TEST INDYJSKIEGO MCDONALDA - 80 DDŚ #11">
+                        <p>TEST INDYJSKIEGO MCDONALDA - 80 DDŚ #11</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=DIHo4KqwVVs" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/DIHo4KqwVVs/mqdefault.jpg" alt="ⱯꓘZꓛⱯꓤS = KONIEC ODCINKA - 80 DDŚ #10">
+                        <p>ⱯꓘZꓛⱯꓤS = KONIEC ODCINKA - 80 DDŚ #10</p>
+                    </a>
+                `
+                },
+                Indonesia: {
+                    title: 'Indonezja',
+                    html: `
+                        <p>Odcinki Pateca z Indonezji:</p>
+                        <a href="https://www.youtube.com/watch?v=G4y-JBNrD8Y" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/G4y-JBNrD8Y/mqdefault.jpg" alt="ZOSTAŁEM BALIJSKIM MAKŁOWICZEM - 80 DDŚ #23">
+                            <p>ZOSTAŁEM BALIJSKIM MAKŁOWICZEM - 80 DDŚ #23</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=M6Zue3AuasE" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/M6Zue3AuasE/mqdefault.jpg" alt="NAJGORSZY DZIEŃ PODRÓŻY - 80 DDŚ #22">
+                            <p>NAJGORSZY DZIEŃ PODRÓŻY - 80 DDŚ #22</p>
+                        </a>
+                    `
+                }
+
+            };
+
+        function showCountryPanel(krajName, countryData) {
+            const data = panelData[krajName] || {
+                title: krajName,
+                html: '<p>Tutaj go jeszcze nie było :(</p>'
+            };
+
+            infoTitle.textContent = data.title;
+            infoContent.innerHTML = data.html;
+            infoPanel.classList.add('visible');
+
+            // Stop auto-rotation
+            mojGlobus.controls().autoRotate = false;
+
+            // Center the globe on the selected country
+            if (countryData && countryData.geometry) {
+                // Calculate the centroid of the country's polygon(s)
+                const coordinates = countryData.geometry.coordinates;
+                let allCoords = [];
+                
+                if (countryData.geometry.type === 'Polygon') {
+                    allCoords = coordinates[0];
+                } else if (countryData.geometry.type === 'MultiPolygon') {
+                    coordinates.forEach(polygon => {
+                        allCoords = allCoords.concat(polygon[0]);
+                    });
+                }
+                
+                if (allCoords.length > 0) {
+                    // Calculate centroid
+                    let lat = 0, lon = 0;
+                    allCoords.forEach(coord => {
+                        lon += coord[0];
+                        lat += coord[1];
+                    });
+                    lat /= allCoords.length;
+                    lon /= allCoords.length;
+                    
+                    // Animate to the country's center with a smooth transition
+                    mojGlobus.pointOfView({ lat: lat, lng: lon, altitude: 2 }, 1000);
+                }
+            }
+        }
+
+        const mojGlobus = Globe()
+            (document.getElementById('kontener-na-globus'))
+            .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+            .showAtmosphere(true)
+            .atmosphereColor('lightskyblue')
+            .atmosphereAltitude(0.15)
+            .pointOfView({ altitude: 2 });
+
+        fetch('https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson')
+            .then(res => res.json())
+            .then(kraje => {
+                mojGlobus
+                    .polygonsData(kraje.features)
+                    
+                    .polygonCapColor(kraj => {
+                        const nazwa = kraj.properties.ADMIN;
+                        if (odwiedzoneKraje.includes(nazwa)) {
+                            return 'rgba(0, 255, 0, 0.6)';
+                        }
+                        return 'rgba(255, 255, 255, 0.3)';
+                    })
+                    
+                    .polygonStrokeColor(() => 'rgba(255, 255, 255, 0.5)')
+                    .polygonAltitude(kraj => {
+                        return odwiedzoneKraje.includes(kraj.properties.ADMIN) ? 0.03 : 0.01;
+                    })
+                    
+                    .onPolygonClick((kraj) => {
+                        showCountryPanel(kraj.properties.ADMIN, kraj);
+                    })
+                    
+                    .onPolygonHover(krajPodMyszka => {
+                        najechanyKraj = krajPodMyszka;
+                        mojGlobus
+                            .polygonAltitude(kraj => {
+                                if (kraj === najechanyKraj) return 0.08;
+                                if (odwiedzoneKraje.includes(kraj.properties.ADMIN)) return 0.03;
+                                return 0.01;
+                            })
+                            .polygonCapColor(kraj => {
+                                if (kraj === najechanyKraj) return 'gold';
+                                if (odwiedzoneKraje.includes(kraj.properties.ADMIN)) return 'rgba(0, 255, 0, 0.6)';
+                                return 'rgba(255, 255, 255, 0.3)';
+                            });
+                    });
+            });
+
+        mojGlobus.controls().autoRotate = true;
+        mojGlobus.controls().autoRotateSpeed = 0.5;
+    </script>
+
+</body>
+</html>
