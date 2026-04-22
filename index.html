@@ -18,7 +18,7 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            color: rgb(255, 0, 0);
+            color: rgb(0, 255, 0);
             font-size: 32px;
             font-weight: bold;
             z-index: 1000;
@@ -26,9 +26,9 @@
         }
         #kraje-odwiedzone {
             position: absolute;
-            top: 50px;
+            top: 10px;
             left: 10px;
-            color: rgb(255, 0, 0);
+            color: rgb(0, 255, 0);
             font-size: 24px;
             z-index: 1000;
             font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -46,7 +46,7 @@
             padding: 18px;
             background: rgba(10, 10, 10, 0.95);
             border: 1px solid rgba(255, 255, 255, 0.12);
-            color: white;
+            color: rgb(255, 255, 255);
             overflow-y: auto;
             z-index: 1001;
             border-radius: 14px;
@@ -67,7 +67,7 @@
             margin-bottom: 10px;
         }
         #info-panel a {
-            color: #ff0000;
+            color: rgb(255, 255, 255);
             text-decoration: none;
         }
         #close-panel {
@@ -80,23 +80,91 @@
             font-size: 18px;
             cursor: pointer;
         }
+        #social-kontener {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    display: flex;
+    flex-direction: column; 
+    gap: 15px;
+    z-index: 5;
+}
+
+.wiersz-instagram {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.instagram-tekst {
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+}
+
+.przycisk-instagram {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease;
+    text-decoration: none;
+}
+
+.przycisk-instagram:hover {
+    transform: scale(1.15);
+}
+
+.przycisk-instagram svg {
+    width: 26px;
+    height: 26px;
+    fill: white;
+}
     </style>
 </head>
 <body>
 
-    <div id="patec-text">PROGRES ŚWIATA PATECA:</div>
+    <div id="patec-text"></div>
 
-    <div id="kraje-odwiedzone">ODWIEDZONE KRAJE: 0/195</div>
+    <div id="kraje-odwiedzone">PATEC ODWIEDZIŁ 68 Z 195 KRAJÓW</div>
 
     <div id="info-panel">
         <button id="close-panel">×</button>
         <h2 id="info-title">Kliknij kraj</h2>
         <div id="info-content">
-            <p>Kliknij kraj na globusie, aby zobaczyć informacje tutaj.</p>
+        <p>Kliknij kraj na globusie, aby zobaczyć informacje tutaj.</p>
         </div>
     </div>
 
     <div id="kontener-na-globus"></div>
+    
+    <div id="social-kontener">
+    
+    <div class="wiersz-instagram">
+        <div class="instagram-tekst">Patec:</div>
+        <a href="https://www.instagram.com/patec_wariatec/" target="_blank" class="przycisk-instagram" title="Odwiedź główny profil">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+            </svg>
+        </a>
+    </div>
+
+    <div class="wiersz-instagram">
+        <div class="instagram-tekst">Autor:</div>
+        <a href="https://www.instagram.com/gxreckv/" target="_blank" class="przycisk-instagram" title="Odwiedź drugi profil">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+            </svg>
+        </a>
+    </div>
+
+</div>
 
     <script>
         const odwiedzoneKraje = [
@@ -110,7 +178,9 @@
             "Ukraine",
             "Dominican Republic",
             "South Africa",
+            "Montenegro",
             "Norway",
+            "Macedonia",
             "Sweden",
             "Slovakia",
             "Colombia",
@@ -123,6 +193,7 @@
             "Iceland",
             "Botswana",
             "Zimbabwe",
+            "Kosovo",
             "Croatia",
             "Argentina",
             "Austria",
@@ -151,10 +222,20 @@
             "Namibia",
             "Angola",
             "Zambia",
+            "Australia",
             "Fiji",
             "Chile",
             "Antarctica",
             "Turkey",
+            "France",
+            "Madagascar",
+            "China",
+            "Georgia",
+            "Romania",
+            "Hungary",
+            "Republic of Serbia",
+            "Bosnia and Herzegovina",
+            "Venezuela",
         ];
 
         let najechanyKraj = null;
@@ -174,6 +255,54 @@
                 title: 'Polska',
                 html: `
                     <p>Odcinki Pateca z Polski:</p>
+                    <a href="https://www.youtube.com/watch?v=UTg9PPkpk44" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/UTg9PPkpk44/mqdefault.jpg" alt="NIE WSZYSTKO POSZŁO ZGODNIE Z PLANEM...">
+                            <p>NIE WSZYSTKO POSZŁO ZGODNIE Z PLANEM...</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=sfOUOBV_gLo" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/sfOUOBV_gLo/mqdefault.jpg" alt="SPĘDZILIŚMY NOC W DECATHLONIE">
+                        <p>SPĘDZILIŚMY NOC W DECATHLONIE</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=dthv6aaDyEA" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/dthv6aaDyEA/mqdefault.jpg" alt="TO MÓJ NOWY DOM!">
+                        <p>TO MÓJ NOWY DOM!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=Kb0E3WZWeMg" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/Kb0E3WZWeMg/mqdefault.jpg" alt="FOKA: 160 KM WPŁAW PRZEZ BAŁTYK">
+                        <p>FOKA: 160 KM WPŁAW PRZEZ BAŁTYK</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=NkOCwPg2d64" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/NkOCwPg2d64/mqdefault.jpg" alt="KONIEC PROJEKTU 27">
+                        <p>KONIEC PROJEKTU 27</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=XwfeCJq5Fek" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/XwfeCJq5Fek/mqdefault.jpg" alt="to marzenie kosztowało 2 MILIONY...">
+                        <p>to marzenie kosztowało 2 MILIONY...</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=HFy9IZinzTU" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/HFy9IZinzTU/mqdefault.jpg" alt="PRZEPŁYNĘ OCEAN!">
+                        <p>PRZEPŁYNĘ OCEAN!</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=5JrWEvt2XrE" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/5JrWEvt2XrE/mqdefault.jpg" alt="NOWY ROZDZIAŁ W MOIM ŻYCIU">
+                        <p>NOWY ROZDZIAŁ W MOIM ŻYCIU</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=ssP7MR_K61s" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/ssP7MR_K61s/mqdefault.jpg" alt="WOJNA KUCHENNA Z ZOJĄ! (feat. Kuqe 2115, Oswald Rodrigo Pereira, xntentacion)">
+                        <p>WOJNA KUCHENNA Z ZOJĄ! (feat. Kuqe 2115, Oswald Rodrigo Pereira, xntentacion)</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=g_-lGt50sl8" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/g_-lGt50sl8/mqdefault.jpg" alt="Spróbowałem Najtrudniejszego Biegu Na Świecie">
+                        <p>Spróbowałem Najtrudniejszego Biegu Na Świecie</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=oLUlhozePpk" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/oLUlhozePpk/mqdefault.jpg" alt="Góra TRUDNIEJSZA od MOUNT EVEREST? | Q&A feat. Oswald Rodrigo Pereira">
+                        <p>Góra TRUDNIEJSZA od MOUNT EVEREST? | Q&A feat. Oswald Rodrigo Pereira</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=ts6KmGPr_mc" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/ts6KmGPr_mc/mqdefault.jpg" alt="ZWIEDZIŁEM PÓŁ ŚWIATA, ŻEBY TO NAGRAĆ">
+                        <p>ZWIEDZIŁEM PÓŁ ŚWIATA, ŻEBY TO NAGRAĆ</p>
+                    </a>
                     <a href="https://www.youtube.com/watch?v=-oQjM_Nk6r8" target="_blank" rel="noreferrer">
                         <img src="https://img.youtube.com/vi/-oQjM_Nk6r8/mqdefault.jpg" alt="Spróbowałem NAJDZIWNIEJSZEGO SPORTU">
                         <p>Spróbowałem NAJDZIWNIEJSZEGO SPORTU</p>
@@ -499,8 +628,8 @@
                         <p>KUCHENNA WOJNA Z NOWCIAXEM</p>
                     </a>
                     <a href="https://www.youtube.com/watch?v=FRVdQaJgq9k" target="_blank" rel="noreferrer">
-                        <img src="https://img.youtube.com/vi/FRVdQaJgq9k/mqdefault.jpg" alt="Największy IMPOSTOR w EKIPIE?">
-                        <p>Największy IMPOSTOR w EKIPIE?</p>
+                        <img src="https://img.youtube.com/vi/FRVdQaJgq9k/mqdefault.jpg" alt="Największy IMPOSTOR w EKIPIE?">
+                        <p>Największy IMPOSTOR w EKIPIE?</p>
                     </a>
                     <a href="https://www.youtube.com/watch?v=sTKvKvpsI2A" target="_blank" rel="noreferrer">
                         <img src="https://img.youtube.com/vi/sTKvKvpsI2A/mqdefault.jpg" alt="Sprawdzamy z EKIPĄ KefirX">
@@ -571,6 +700,22 @@
                 title: 'Stany Zjednoczone',
                 html: `
                     <p>Odcinki Pateca z USA:</p>
+                    <a href="https://www.youtube.com/watch?v=XwfeCJq5Fek" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/XwfeCJq5Fek/mqdefault.jpg" alt="to marzenie kosztowało 2 MILIONY...">
+                        <p>to marzenie kosztowało 2 MILIONY...</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=oLUlhozePpk" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/oLUlhozePpk/mqdefault.jpg" alt="Góra TRUDNIEJSZA od MOUNT EVEREST? | Q&A feat. Oswald Rodrigo Pereira">
+                        <p>Góra TRUDNIEJSZA od MOUNT EVEREST? | Q&A feat. Oswald Rodrigo Pereira</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=SL2oHiKfbEA" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/SL2oHiKfbEA/mqdefault.jpg" alt="BYLIŚMY ŚWIADKAMI TRAGEDII [Denali 2/2]">
+                        <p>BYLIŚMY ŚWIADKAMI TRAGEDII [Denali 2/2]</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=0RkMhPXu_CQ" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/0RkMhPXu_CQ/mqdefault.jpg" alt="MNAJZIMNIEJSZA GÓRA NA ŚWIECIE (zimniej niż na Mount Everest) [Denali 1/2]">
+                        <p>NAJZIMNIEJSZA GÓRA NA ŚWIECIE (zimniej niż na Mount Everest) [Denali 1/2]</p>
+                    </a>
                     <a href="https://www.youtube.com/watch?v=KumljIILOZY" target="_blank" rel="noreferrer">
                         <img src="https://img.youtube.com/vi/KumljIILOZY/mqdefault.jpg" alt="KUCHENNA WOJNA Z NOWCIAXEM">
                         <p>KUCHENNA WOJNA Z NOWCIAXEM</p>
@@ -623,6 +768,10 @@
                 title: 'Japonia',
                 html: `
                     <p>Odcinki Pateca z Japonii:</p>
+                    <a href="https://www.youtube.com/watch?v=ts6KmGPr_mc" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/ts6KmGPr_mc/mqdefault.jpg" alt="ZWIEDZIŁEM PÓŁ ŚWIATA, ŻEBY TO NAGRAĆ">
+                        <p>ZWIEDZIŁEM PÓŁ ŚWIATA, ŻEBY TO NAGRAĆ</p>
+                    </a>
                     <a href="https://www.youtube.com/watch?v=VYOjWnS4cMY" target="_blank" rel="noreferrer">
                         <img src="https://img.youtube.com/vi/VYOjWnS4cMY/mqdefault.jpg" alt="Video o Japonii">
                         <p>Otwórz film o Japonii</p>
@@ -633,9 +782,21 @@
                 title: 'Rosja',
                 html: `
                     <p>Odcinki Pateca z Rosji:</p>
-                    <a href="https://www.youtube.com/watch?v=tVj0ZTS4WF4" target="_blank" rel="noreferrer">
-                        <img src="https://img.youtube.com/vi/tVj0ZTS4WF4/mqdefault.jpg" alt="Video o Rosji">
-                        <p>Otwórz film o Rosji</p>
+                    <a href="https://www.youtube.com/watch?v=7db9wdB62kA" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/7db9wdB62kA/mqdefault.jpg" alt="PRZESŁUCHALI GO NA GRANICY Z ROSJĄ...">
+                            <p>PRZESŁUCHALI GO NA GRANICY Z ROSJĄ...</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=XwfeCJq5Fek" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/XwfeCJq5Fek/mqdefault.jpg" alt="to marzenie kosztowało 2 MILIONY...">
+                        <p>to marzenie kosztowało 2 MILIONY...</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=baXU6DWwRo0" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/baXU6DWwRo0/mqdefault.jpg" alt="OSTATNI SZCZYT…">
+                            <p>OSTATNI SZCZYT…</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=lED_CwjgEt8" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/lED_CwjgEt8/mqdefault.jpg" alt="TA GÓRA STOI NA GRANICY Z ROSJĄ (Korona Ziemi)">
+                        <p>TA GÓRA STOI NA GRANICY Z ROSJĄ (Korona Ziemi)</p>
                     </a>
                 `
             },
@@ -643,6 +804,10 @@
                 title: 'Tanzania',
                 html: `
                     <p>Odcinki Pateca z Tanzanii:</p>
+                    <a href="https://www.youtube.com/watch?v=XwfeCJq5Fek" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/XwfeCJq5Fek/mqdefault.jpg" alt="to marzenie kosztowało 2 MILIONY...">
+                        <p>to marzenie kosztowało 2 MILIONY...</p>
+                    </a>
                     <a href="https://www.youtube.com/watch?v=rNWzxN3JJ9I" target="_blank" rel="noreferrer">
                         <img src="https://img.youtube.com/vi/rNWzxN3JJ9I/mqdefault.jpg" alt="TARAPATY na Szczycie Kilimanjaro 😥">
                         <p>TARAPATY na Szczycie Kilimanjaro 😥</p>
@@ -701,6 +866,10 @@
                 title: 'RPA',
                 html: `
                     <p>Odcinki Pateca z RPA:</p>
+                    <a href="https://www.youtube.com/watch?v=P3JDLgruLeM" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/P3JDLgruLeM/mqdefault.jpg" alt="72h nauki przetrwania - owg #5">
+                        <p>72h nauki przetrwania - owg #5</p>
+                    </a>
                     <a href="https://www.youtube.com/watch?v=1BR7Gm8gJsM" target="_blank" rel="noreferrer">
                         <img src="https://img.youtube.com/vi/1BR7Gm8gJsM/mqdefault.jpg" alt="ŁOWIMY REKINY W POŁUDNIOWEJ AFRYCE 🦈">
                         <p>ŁOWIMY REKINY W POŁUDNIOWEJ AFRYCE 🦈</p>
@@ -781,6 +950,10 @@
                 title: 'Szwecja',
                 html: `
                     <p>Odcinki Pateca ze Szwecji:</p>
+                    <a href="https://www.youtube.com/watch?v=Kb0E3WZWeMg" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/Kb0E3WZWeMg/mqdefault.jpg" alt="FOKA: 160 KM WPŁAW PRZEZ BAŁTYK">
+                        <p>FOKA: 160 KM WPŁAW PRZEZ BAŁTYK</p>
+                    </a>
                     <a href="https://www.youtube.com/watch?v=QvzksFogcxg" target="_blank" rel="noreferrer">
                         <img src="https://img.youtube.com/vi/QvzksFogcxg/mqdefault.jpg" alt="JEDLIŚMY TO CO ZNALEŹLIŚMY W LESIE">
                         <p>JEDLIŚMY TO CO ZNALEŹLIŚMY W LESIE</p>
@@ -809,6 +982,14 @@
                 title: 'Hiszpania',
                 html: `
                     <p>Odcinki Pateca z Hiszpanii:</p>
+                    <a href="https://www.youtube.com/watch?v=HRw7-NPgIEc" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/HRw7-NPgIEc/mqdefault.jpg" alt="OCEAN NIE WYBACZA BŁĘDÓW.">
+                        <p>OCEAN NIE WYBACZA BŁĘDÓW.</p>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=oua3ca-RBdE" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/oua3ca-RBdE/mqdefault.jpg" alt="WYPŁYWAM NA OCEAN... (WYSPY KANARYJSKIE)">
+                        <p>WYPŁYWAM NA OCEAN... (WYSPY KANARYJSKIE)</p>
+                    </a>
                     <a href="https://www.youtube.com/watch?v=SONxqMfU3LU" target="_blank" rel="noreferrer">
                         <img src="https://img.youtube.com/vi/SONxqMfU3LU/mqdefault.jpg" alt="POSTAWIŁEM IM WAKACJE">
                         <p>POSTAWIŁEM IM WAKACJE</p>
@@ -861,6 +1042,10 @@
                 title: 'Islandia',
                 html: `
                     <p>Odcinki Pateca z Islandii:</p>
+                    <a href="https://www.youtube.com/watch?v=ts6KmGPr_mc" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/ts6KmGPr_mc/mqdefault.jpg" alt="ZWIEDZIŁEM PÓŁ ŚWIATA, ŻEBY TO NAGRAĆ">
+                        <p>ZWIEDZIŁEM PÓŁ ŚWIATA, ŻEBY TO NAGRAĆ</p>
+                    </a>
                     <a href="https://www.youtube.com/watch?v=n8_gOwhZ8Fo" target="_blank" rel="noreferrer">
                         <img src="https://img.youtube.com/vi/n8_gOwhZ8Fo/mqdefault.jpg" alt="WOJNA KUCHENNA NA ISLANDII! (feat. PIOTRULLO)">
                         <p>WOJNA KUCHENNA NA ISLANDII! (feat. PIOTRULLO)</p>
@@ -1157,6 +1342,14 @@
                     title: 'Indie',
                     html: `
                         <p>Odcinki Pateca z Indii:</p>
+                        <a href="https://www.youtube.com/watch?v=Uyp22-pNePI" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/Uyp22-pNePI/mqdefault.jpg" alt="test mcdonalds w indiach - owg #3">
+                            <p>test mcdonalds w indiach - owg #3</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=ybrywRcJvC8" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/ybrywRcJvC8/mqdefault.jpg" alt="nasz nowy projekt - owg #1">
+                            <p>nasz nowy projekt - owg #1</p>
+                        </a>
                         <a href="https://www.youtube.com/watch?v=ZEdZt3yEQBs" target="_blank" rel="noreferrer">
                             <img src="https://img.youtube.com/vi/ZEdZt3yEQBs/mqdefault.jpg" alt="BONUS - 80DDŚ (obiecany odcinek)">
                             <p>BONUS - 80DDŚ (obiecany odcinek)</p>
@@ -1215,6 +1408,14 @@
                     title: 'Indonezja',
                     html: `
                         <p>Odcinki Pateca z Indonezji:</p>
+                        <a href="https://www.youtube.com/watch?v=XwfeCJq5Fek" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/XwfeCJq5Fek/mqdefault.jpg" alt="to marzenie kosztowało 2 MILIONY...">
+                        <p>to marzenie kosztowało 2 MILIONY...</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=ts6KmGPr_mc" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/ts6KmGPr_mc/mqdefault.jpg" alt="ZWIEDZIŁEM PÓŁ ŚWIATA, ŻEBY TO NAGRAĆ">
+                        <p>ZWIEDZIŁEM PÓŁ ŚWIATA, ŻEBY TO NAGRAĆ</p>
+                        </a>
                         <a href="https://www.youtube.com/watch?v=Lvrb3VCpY8E" target="_blank" rel="noreferrer">
                             <img src="https://img.youtube.com/vi/Lvrb3VCpY8E/mqdefault.jpg" alt="TEJ GÓRY STRZEGĄ TUBYLCY! (KORONA ZIEMI 5/7)">
                             <p>TEJ GÓRY STRZEGĄ TUBYLCY! (KORONA ZIEMI 5/7)</p>
@@ -1401,6 +1602,10 @@
                     title: 'Nepal',
                     html: `
                         <p>Odcinki Pateca z Nepalu:</p>
+                        <a href="https://www.youtube.com/watch?v=XwfeCJq5Fek" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/XwfeCJq5Fek/mqdefault.jpg" alt="to marzenie kosztowało 2 MILIONY...">
+                        <p>to marzenie kosztowało 2 MILIONY...</p>
+                        </a>
                         <a href="https://www.youtube.com/watch?v=n9Hp1vAdGhY" target="_blank" rel="noreferrer">
                             <img src="https://img.youtube.com/vi/n9Hp1vAdGhY/mqdefault.jpg" alt="ILE KOSZTOWAŁ MOUNT EVEREST? - Q&A">
                             <p>ILE KOSZTOWAŁ MOUNT EVEREST? - Q&A</p>
@@ -1451,6 +1656,10 @@
                     title: 'Austria',
                     html: `
                         <p>Odcinki Pateca z Austrii:</p>
+                        <a href="https://www.youtube.com/watch?v=MUq5TBAVCmE" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/MUq5TBAVCmE/mqdefault.jpg" alt="tego nie było w naszym bingo - owg #7">
+                            <p>tego nie było w naszym bingo - owg #7</p>
+                        </a>
                         <a href="https://www.youtube.com/watch?v=k2spT-Jbrcs" target="_blank" rel="noreferrer">
                             <img src="https://img.youtube.com/vi/k2spT-Jbrcs/mqdefault.jpg" alt="OSTATNI SPRAWDZIAN PRZED MOUNT EVEREST">
                             <p>OSTATNI SPRAWDZIAN PRZED MOUNT EVEREST</p>
@@ -1469,6 +1678,14 @@
                     title: 'Szwajcaria',
                     html: `
                         <p>Odcinki Pateca ze Szwajcarii:</p>
+                        <a href="https://www.youtube.com/watch?v=XwfeCJq5Fek" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/XwfeCJq5Fek/mqdefault.jpg" alt="to marzenie kosztowało 2 MILIONY...">
+                        <p>to marzenie kosztowało 2 MILIONY...</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=CxREhAhHZP0" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/CxREhAhHZP0/mqdefault.jpg" alt="SIÓDMY SZCZYT KORONY ZIEMII">
+                            <p>SIÓDMY SZCZYT KORONY ZIEMII</p>
+                        </a>
                         <a href="https://www.youtube.com/watch?v=s4nQeR0B948" target="_blank" rel="noreferrer">
                             <img src="https://img.youtube.com/vi/s4nQeR0B948/mqdefault.jpg" alt="NIE POPEŁNIAJ TEGO BŁĘDU...">
                             <p>NIE POPEŁNIAJ TEGO BŁĘDU...</p>
@@ -1611,6 +1828,14 @@
                     title: 'Antarktyda',
                     html: `
                         <p>Odcinki Pateca z Antarktydy:</p>
+                        <a href="https://www.youtube.com/watch?v=XwfeCJq5Fek" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/XwfeCJq5Fek/mqdefault.jpg" alt="to marzenie kosztowało 2 MILIONY...">
+                        <p>to marzenie kosztowało 2 MILIONY...</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=21haGKR63rM" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/21haGKR63rM/mqdefault.jpg" alt="Maraton NA ANTARKTYDZIE">
+                            <p>Maraton NA ANTARKTYDZIE</p>
+                            </a>
                         <a href="https://www.youtube.com/watch?v=vAcCfkt7WVQ" target="_blank" rel="noreferrer">
                             <img src="https://img.youtube.com/vi/vAcCfkt7WVQ/mqdefault.jpg" alt="NAJDROŻSZA WYPRAWA w Moim Życiu">
                             <p>NAJDROŻSZA WYPRAWA w Moim Życiu</p>
@@ -1649,6 +1874,10 @@
                     title: 'Argentyna',
                     html: `
                         <p>Odcinki Pateca z Argentyny:</p>
+                        <a href="https://www.youtube.com/watch?v=XwfeCJq5Fek" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/XwfeCJq5Fek/mqdefault.jpg" alt="to marzenie kosztowało 2 MILIONY...">
+                        <p>to marzenie kosztowało 2 MILIONY...</p>
+                        </a>
                         <a href="https://www.youtube.com/watch?v=9rCbirBYp-M" target="_blank" rel="noreferrer">
                             <img src="https://img.youtube.com/vi/9rCbirBYp-M/mqdefault.jpg" alt="Dostałem Lekcję Pokory...">
                             <p>Dostałem Lekcję Pokory...</p>
@@ -1672,8 +1901,185 @@
                             <p>to był NAJGORSZY wyjazd mojego życia…</p>
                         </a>
                      `
-                 }
-
+                 },
+                 France: {
+                    title: 'Francja',
+                    html: `
+                        <p>Odcinki Pateca z Francji:</p>
+                        <a href="https://www.youtube.com/watch?v=XwfeCJq5Fek" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/XwfeCJq5Fek/mqdefault.jpg" alt="to marzenie kosztowało 2 MILIONY...">
+                        <p>to marzenie kosztowało 2 MILIONY...</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=CxREhAhHZP0" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/CxREhAhHZP0/mqdefault.jpg" alt="SIÓDMY SZCZYT KORONY ZIEMII">
+                            <p>SIÓDMY SZCZYT KORONY ZIEMII</p>
+                        </a>
+                     `
+                 },
+                 Australia: {
+                    title: 'Australia',
+                    html: `
+                        <p>Odcinki Pateca z Australii:</p>
+                        <a href="https://www.youtube.com/watch?v=XwfeCJq5Fek" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/XwfeCJq5Fek/mqdefault.jpg" alt="to marzenie kosztowało 2 MILIONY...">
+                        <p>to marzenie kosztowało 2 MILIONY...</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=68HbbOb6zyw" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/68HbbOb6zyw/mqdefault.jpg" alt="Maraton Na Każdym Kontynencie Świata">
+                            <p>Maraton Na Każdym Kontynencie Świata</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=jS2BvxK6M4g" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/jS2BvxK6M4g/mqdefault.jpg" alt="NAJWYŻSZA GÓRA W AUSTRALII!">
+                            <p>NAJWYŻSZA GÓRA W AUSTRALII!</p>
+                        </a>
+                     `
+                 },
+                 Madagascar: {
+                    title: 'Madagaskar',
+                    html: `
+                        <p>Odcinki Pateca z Madagaskaru:</p>
+                        <a href="https://www.youtube.com/watch?v=MUq5TBAVCmE" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/MUq5TBAVCmE/mqdefault.jpg" alt="tego nie było w naszym bingo - owg #7">
+                            <p>tego nie było w naszym bingo - owg #7</p>
+                        </a>
+                    `
+                 },
+                 Georgia: {
+                    title: 'Gruzja',
+                    html: `
+                        <p>Odcinki Pateca z Gruzji:</p>
+                        <a href="https://www.youtube.com/watch?v=7db9wdB62kA" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/7db9wdB62kA/mqdefault.jpg" alt="PRZESŁUCHALI GO NA GRANICY Z ROSJĄ...">
+                            <p>PRZESŁUCHALI GO NA GRANICY Z ROSJĄ...</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=baXU6DWwRo0" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/baXU6DWwRo0/mqdefault.jpg" alt="OSTATNI SZCZYT…">
+                            <p>OSTATNI SZCZYT…</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=lED_CwjgEt8" target="_blank" rel="noreferrer">
+                        <img src="https://img.youtube.com/vi/lED_CwjgEt8/mqdefault.jpg" alt="TA GÓRA STOI NA GRANICY Z ROSJĄ (Korona Ziemi)">
+                        <p>TA GÓRA STOI NA GRANICY Z ROSJĄ (Korona Ziemi)</p>
+                    </a>
+                    `
+                 },
+                 China: {
+                    title: 'Chiny',
+                    html: `
+                        <p>Odcinki Pateca z Chin:</p>
+                        <a href="https://www.youtube.com/watch?v=cQavSAjbikk" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/cQavSAjbikk/mqdefault.jpg" alt="Test CHIŃSKIEGO MCDONALD'S">
+                            <p>Test CHIŃSKIEGO MCDONALD'S</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=1UdacJCySFQ" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/1UdacJCySFQ/mqdefault.jpg" alt="MIASTO 8D W CHINACH">
+                            <p>MIASTO 8D W CHINACH</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=wQd1SBmo1ww" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/wQd1SBmo1ww/mqdefault.jpg" alt="CHIŃSKI TINDER W REALNYM ŻYCIU">
+                            <p>CHIŃSKI TINDER W REALNYM ŻYCIU</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=_srLUrQpdPo" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/_srLUrQpdPo/mqdefault.jpg" alt="Mroczna Strona Pand w Chinach">
+                            <p>Mroczna Strona Pand w Chinach</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=iy51HLNyc4U" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/iy51HLNyc4U/mqdefault.jpg" alt="NAJOSTRZEJSZA KUCHNIA ŚWIATA (CHINY)">
+                            <p>NAJOSTRZEJSZA KUCHNIA ŚWIATA (CHINY)</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=gaPOvu0Leu8" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/gaPOvu0Leu8/mqdefault.jpg" alt="NAJBARDZIEJ KONTROLOWANY KRAJ NA ŚWIECIE?">
+                            <p>NAJBARDZIEJ KONTROLOWANY KRAJ NA ŚWIECIE?</p>
+                        </a>
+                    `
+                },
+                Hungary: {
+                    title: 'Węgry',
+                    html: `
+                        <p>Odcinki Pateca z Węgier:</p>
+                        <a href="https://www.youtube.com/watch?v=dthv6aaDyEA" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/dthv6aaDyEA/mqdefault.jpg" alt="TO MÓJ NOWY DOM!">
+                            <p>TO MÓJ NOWY DOM!</p>
+                        </a>
+                     `
+                    },
+                'Republic of Serbia': {
+                    title: 'Serbia',
+                    html: `
+                        <p>Odcinki Pateca z Serbii:</p>
+                        <a href="https://www.youtube.com/watch?v=dthv6aaDyEA" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/dthv6aaDyEA/mqdefault.jpg" alt="TO MÓJ NOWY DOM!">
+                            <p>TO MÓJ NOWY DOM!</p>
+                        </a>
+                     `
+                    },
+                'Bosnia and Herzegovina': {
+                    title: 'Bośnia i Hercegowina',
+                    html: `
+                        <p>Odcinki Pateca z Bośni i Hercegowiny:</p>
+                        <a href="https://www.youtube.com/watch?v=kZjUQuRvnBI" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/kZjUQuRvnBI/mqdefault.jpg" alt="O TYM KRAJU NIE UCZĄ W SZKOŁACH...">
+                            <p>O TYM KRAJU NIE UCZĄ W SZKOŁACH...</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=dthv6aaDyEA" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/dthv6aaDyEA/mqdefault.jpg" alt="TO MÓJ NOWY DOM!">
+                            <p>TO MÓJ NOWY DOM!</p>
+                        </a>
+                     `
+                    },
+                Montenegro: {
+                    title: 'Czarnogóra',
+                    html: `
+                        <p>Odcinki Pateca z Czarnogóry:</p>
+                        <a href="https://www.youtube.com/watch?v=kZjUQuRvnBI" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/kZjUQuRvnBI/mqdefault.jpg" alt="O TYM KRAJU NIE UCZĄ W SZKOŁACH...">
+                            <p>O TYM KRAJU NIE UCZĄ W SZKOŁACH...</p>
+                        </a>
+                     `
+                    },
+                Kosovo: {
+                    title: 'Kosowo',
+                    html: `
+                        <p>Odcinki Pateca z Kosowa:</p>
+                        <a href="https://www.youtube.com/watch?v=5VVenmZBhZo" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/5VVenmZBhZo/mqdefault.jpg" alt="POLICJA NAM DOKUCZA">
+                            <p>POLICJA NAM DOKUCZA</p>
+                        </a>
+                     `
+                    },
+                Macedonia: {
+                    title: 'Macedonia',
+                    html: `
+                        <p>Odcinki Pateca z Macedonii:</p>
+                        <a href="https://www.youtube.com/watch?v=5VVenmZBhZo" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/5VVenmZBhZo/mqdefault.jpg" alt="POLICJA NAM DOKUCZA">
+                            <p>POLICJA NAM DOKUCZA</p>
+                        </a>
+                     `
+                    },
+                Romania: {
+                    title: 'Rumunia',
+                    html: `
+                        <p>Odcinki Pateca z Rumunii:</p>
+                        <a href="https://www.youtube.com/watch?v=5VVenmZBhZo" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/5VVenmZBhZo/mqdefault.jpg" alt="POLICJA NAM DOKUCZA">
+                            <p>POLICJA NAM DOKUCZA</p>
+                        </a>
+                    `
+                    },
+                Venezuela: {
+                    title: 'Wenezuela',
+                    html: `
+                        <p>Odcinki Pateca z Wenezueli:</p>
+                        <a href="https://www.youtube.com/watch?v=BEQw0u1K0wA" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/BEQw0u1K0wA/mqdefault.jpg" alt="Zjechałem z NAJWYŻSZEGO WODOSPADU ŚWIATA">
+                            <p>Zjechałem z NAJWYŻSZEGO WODOSPADU ŚWIATA</p>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=HFtxsbzdemc" target="_blank" rel="noreferrer">
+                            <img src="https://img.youtube.com/vi/HFtxsbzdemc/mqdefault.jpg" alt="WENEZUELA: Jak bardzo jest NIEBEZPIECZNA?">
+                            <p>WENEZUELA: Jak bardzo jest NIEBEZPIECZNA?</p>
+                        </a>
+                    `
+                    },
             };
 
         function showCountryPanel(krajName, countryData) {
@@ -1686,12 +2092,9 @@
             infoContent.innerHTML = data.html;
             infoPanel.classList.add('visible');
 
-            // Stop auto-rotation
             mojGlobus.controls().autoRotate = false;
 
-            // Center the globe on the selected country
             if (countryData && countryData.geometry) {
-                // Calculate the centroid of the country's polygon(s)
                 const coordinates = countryData.geometry.coordinates;
                 let allCoords = [];
                 
@@ -1704,7 +2107,6 @@
                 }
                 
                 if (allCoords.length > 0) {
-                    // Calculate centroid
                     let lat = 0, lon = 0;
                     allCoords.forEach(coord => {
                         lon += coord[0];
@@ -1713,7 +2115,6 @@
                     lat /= allCoords.length;
                     lon /= allCoords.length;
                     
-                    // Animate to the country's center with a smooth transition
                     mojGlobus.pointOfView({ lat: lat, lng: lon, altitude: 2 }, 1000);
                 }
             }
