@@ -236,6 +236,42 @@
     height: 26px;
     fill: white;
 }
+    /* Optymalizacja mobilna */
+@media (max-width: 768px) {
+    #patec-text {
+        font-size: 22px; /* Mniejszy napis na górze */
+    }
+
+    #kraje-odwiedzone {
+        font-size: 16px;
+        top: 45px; /* Przesunięcie pod główny tytuł */
+    }
+
+    #info-panel {
+        width: 100%; /* Panel na całą szerokość */
+        right: 0;
+        top: auto;
+        bottom: 0; /* Panel pojawia się na dole */
+        border-radius: 20px 20px 0 0; /* Zaokrąglone tylko górne rogi */
+        max-height: 60%; /* Żeby nie zasłonił całego globusa */
+        box-sizing: border-box;
+    }
+
+    #social-kontener {
+        bottom: 15px;
+        right: 15px;
+        gap: 10px;
+    }
+
+    .instagram-tekst {
+        display: none; /* Ukrywamy tekst "Patec:" i "Autor:", zostawiamy same ikonki dla oszczędności miejsca */
+    }
+
+    .przycisk-instagram {
+        width: 40px;
+        height: 40px;
+    }
+}
     </style>
 </head>
 <body>
@@ -2303,6 +2339,9 @@
                     
                     .onPolygonClick((kraj) => {
                         showCountryPanel(kraj.properties.ADMIN, kraj);
+                        if (window.innerWidth <= 768) {
+                        infoPanel.scrollTop = 0;
+                        }
                     })
                     
                     .onPolygonHover(krajPodMyszka => {
