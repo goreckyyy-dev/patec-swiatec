@@ -12,26 +12,82 @@
             margin: 0; 
             padding: 0; 
             overflow: hidden; 
-            background-color: #000000; 
+            background-color: #000000;
+            font-family: 'Trebuchet MS', sans-serif;
         }
-        #patec-text {
+        #top-panel {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgb(0, 255, 0);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-sizing: border-box;
+            z-index: 2000;
+            box-shadow: 0 4px 20px rgba(0, 255, 0, 0.2);
+        }
+
+        #patec-status {
             color: rgb(0, 255, 0);
-            font-size: 32px;
+            font-size: 22px;
             font-weight: bold;
-            z-index: 1000;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-family: 'Trebuchet MS', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        #kraje-odwiedzone {
+
+        #search-container {
+            position: relative;
+            flex-grow: 1;
+            max-width: 400px;
+            margin-left: 50px;
+        }
+
+        #search-input {
+            width: 100%;
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid rgb(0, 255, 0);
+            border-radius: 20px;
+            color: white;
+            padding: 8px 20px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        #search-input:focus {
+            box-shadow: 0 0 15px rgb(0, 255, 0);
+        }
+
+        #search-results {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 45px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid rgb(0, 255, 0);
+            border-radius: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .search-item {
+            padding: 12px 20px;
+            color: white;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.1);
+            transition: background 0.2s;
+        }
+
+        .search-item:hover {
+            background: rgba(0, 255, 0, 0.2);
             color: rgb(0, 255, 0);
-            font-size: 24px;
-            z-index: 1000;
-            font-family: 'Fantasy', 'Copperplate';
         }
         #kontener-na-globus {
             position: absolute;
@@ -39,19 +95,23 @@
         }
         #info-panel {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 320px;
-            max-height: calc(100% - 20px);
-            padding: 18px;
-            background: rgba(10, 10, 10, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            color: rgb(255, 255, 255);
+            top: 70px; /* Wysokość górnego panelu */
+            right: 0;  /* Przyklejamy do prawej krawędzi */
+            width: 400px;
+            height: calc(100vh - 70px); /* Cała wysokość minus górny pasek */
+            background: rgba(0, 0, 0, 0.9);
+            border-left: 2px solid rgb(0, 255, 0); /* Tylko lewa krawędź świeci */
+            border-top: none;
+            border-bottom: none;
+            border-right: none;
+            color: rgba(0, 255, 0, 1);
+            padding: 30px;
+            display: none; /* Zmieniane przez JS na 'block' */
+            z-index: 1900; /* Tuż pod panelem górnym (który ma 2000) */
             overflow-y: auto;
-            z-index: 1001;
-            border-radius: 14px;
-            box-shadow: 0 0 24px rgba(0, 0, 0, 0.6);
-            display: none;
+            box-shadow: -10px 0 20px rgba(0, 255, 0, 0.1);
+            box-sizing: border-box;
+            transition: transform 0.3s ease; /* Płynne wysuwanie jeśli używasz transform */
         }
         #info-panel.visible {
             display: block;
@@ -67,18 +127,68 @@
             margin-bottom: 10px;
         }
         #info-panel a {
-            color: rgb(255, 255, 255);
+            color: rgb(0, 255, 0);
             text-decoration: none;
+        }
+        #search-panel {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #search-input {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid rgb(0, 255, 0);
+            border-radius: 25px;
+            color: rgb(0, 255, 0);
+            padding: 10px 20px;
+            width: 300px;
+            font-size: 16px;
+            outline: none;
+            font-family: 'Trebuchet MS', sans-serif;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        #search-input:focus {
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.5);
+            width: 350px;
+        }
+        #search-results {
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid rgb(0, 255, 0);
+            width: 300px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            margin-top: 5px;
+            border-radius: 10px;
+        }
+        .search-item {
+            padding: 10px;
+            color: white;
+            cursor: pointer;
+            font-family: 'Trebuchet MS', sans-serif;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+        }
+        .search-item:hover {
+            background: rgba(0, 255, 0, 0.2);
+            color: rgb(0, 255, 0);
         }
         #close-panel {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 18px;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: 1px solid rgb(0, 255, 0);
+            color: rgb(0, 255, 0);
             cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
         }
         #social-kontener {
     position: fixed;
@@ -98,7 +208,7 @@
 }
 
 .instagram-tekst {
-    color: white;
+    color: rgba(0, 255, 0);
     font-weight: bold;
     font-size: 16px;
     text-shadow: 0 2px 5px rgba(0,0,0,0.8);
@@ -129,6 +239,16 @@
     </style>
 </head>
 <body>
+    <div id="top-panel">
+        <div id="patec-status">Patec odwiedził 68 z 195 krajów</div>
+        
+        <div id="search-container">
+            <input type="text" id="search-input" placeholder="Szukaj kraju..." autocomplete="off">
+            <div id="search-results"></div>
+        </div>
+
+        <div style="width: 200px;"></div> 
+    </div>
 
     <div id="patec-text"></div>
 
@@ -167,6 +287,38 @@
 </div>
 
     <script>
+        const polskieNazwy = {
+            "Poland": "Polska",
+            "Germany": "Niemcy",
+            "United States of America": "Stany Zjednoczone",
+            "Brazil": "Brazylia",
+            "Japan": "Japonia",
+            "Russia": "Rosja",
+            "United Republic of Tanzania": "Tanzania",
+            "Ukraine": "Ukraina",
+            "Dominican Republic": "Dominikana",
+            "South Africa": "RPA",
+            "Norway": "Norwegia",
+            "Slovakia": "Słowacja",
+            "Spain": "Hiszpania",
+            "Netherlands": "Holandia",
+            "Czechia": "Czechy",
+            "Iceland": "Islandia",
+            "Croatia": "Chorwacja",
+            "Argentina": "Argentyna",
+            "Austria": "Austria",
+            "Egypt": "Egipt",
+            "United Kingdom": "Wielka Brytania",
+            "Switzerland": "Szwajcaria",
+            "Thailand": "Tajlandia",
+            "New Zealand": "Nowa Zelandia",
+            "Singapore": "Singapur",
+            "Vietnam": "Wietnam",
+            "Italy": "Włochy",
+            "France": "Francja",
+            "Turkey": "Turcja",
+            "China": "Chiny"
+        };
         const odwiedzoneKraje = [
             "Poland", 
             "Germany", 
@@ -2128,9 +2280,11 @@
             .atmosphereAltitude(0.15)
             .pointOfView({ altitude: 2 });
 
+        let wszystkieKraje = [];
         fetch('https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson')
             .then(res => res.json())
             .then(kraje => {
+                wszystkieKraje = kraje.features; // Zapisujemy dane do wyszukiwania
                 mojGlobus
                     .polygonsData(kraje.features)
                     
@@ -2169,6 +2323,58 @@
 
         mojGlobus.controls().autoRotate = true;
         mojGlobus.controls().autoRotateSpeed = 0.5;
+    const input = document.getElementById('search-input');
+        const results = document.getElementById('search-results');
+
+        input.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            results.innerHTML = '';
+            
+            if (query.length < 2) {
+                results.style.display = 'none';
+                return;
+            }
+
+            // Filtrujemy kraje sprawdzając polską i angielską nazwę
+            const matches = wszystkieKraje.filter(k => {
+                const angielskaNazwa = k.properties.ADMIN;
+                const polskaNazwa = polskieNazwy[angielskaNazwa] || angielskaNazwa; // Jeśli nie ma w słowniku, użyj angielskiej
+                return polskaNazwa.toLowerCase().includes(query) || angielskaNazwa.toLowerCase().includes(query);
+            }).slice(0, 6);
+
+            if (matches.length > 0) {
+                results.style.display = 'block';
+                matches.forEach(kraj => {
+                    const angielskaNazwa = kraj.properties.ADMIN;
+                    const polskaNazwa = polskieNazwy[angielskaNazwa] || angielskaNazwa;
+
+                    const div = document.createElement('div');
+                    div.className = 'search-item';
+                    div.innerText = polskaNazwa;
+                    div.onclick = () => focusOnCountry(kraj, polskaNazwa);
+                    results.appendChild(div);
+                });
+            } else {
+                results.style.display = 'none';
+            }
+        });
+
+        function focusOnCountry(kraj, wyswietlanaNazwa) {
+            results.style.display = 'none';
+            input.value = wyswietlanaNazwa;
+
+            // Pobieranie współrzędnych do przeskoku kamery
+            const coords = kraj.geometry.coordinates[0][0];
+            const [lng, lat] = Array.isArray(coords[0]) ? coords[0] : coords;
+
+            mojGlobus.pointOfView({ lat: lat, lng: lng, altitude: 1.8 }, 1500);
+            
+            // Otwarcie Twojego panelu informacyjnego
+            // Używamy oryginalnej angielskiej nazwy jako klucza do panelData
+            showCountryPanel(kraj.properties.ADMIN, kraj);
+        }
+
+    
     </script>
 
 </body>
