@@ -20,14 +20,16 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 70px;
-            background: rgba(0, 0, 0, 0.7);
+            min-height: 70px;
+            background: rgba(0, 0, 0, 0.75);
             backdrop-filter: blur(10px);
             border-bottom: 2px solid rgb(0, 255, 0);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px 20px;
             box-sizing: border-box;
             z-index: 2000;
             box-shadow: 0 4px 20px rgba(0, 255, 0, 0.2);
@@ -35,59 +37,101 @@
 
         #patec-status {
             color: rgb(0, 255, 0);
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
             font-family: 'Trebuchet MS', sans-serif;
             text-transform: uppercase;
             letter-spacing: 1px;
+            min-width: 180px;
         }
 
         #search-container {
             position: relative;
             flex-grow: 1;
-            max-width: 400px;
-            margin-left: 50px;
+            max-width: 420px;
+            margin-left: 10px;
+            min-width: 180px;
         }
 
         #search-input {
             width: 100%;
-            background: rgba(20, 20, 20, 0.8);
+            background: rgba(10, 10, 10, 0.85);
             border: 1px solid rgb(0, 255, 0);
-            border-radius: 20px;
-            color: white;
-            padding: 8px 20px;
+            border-radius: 24px;
+            color: rgb(0, 255, 0);
+            padding: 10px 18px;
             font-size: 16px;
             outline: none;
             transition: all 0.3s ease;
+            box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.1);
         }
 
         #search-input:focus {
-            box-shadow: 0 0 15px rgb(0, 255, 0);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
         }
 
         #search-results {
             position: absolute;
-            top: 45px;
+            top: 52px;
             width: 100%;
             background: rgba(0, 0, 0, 0.95);
             border: 1px solid rgb(0, 255, 0);
-            border-radius: 10px;
-            max-height: 300px;
+            border-radius: 12px;
+            max-height: 260px;
             overflow-y: auto;
             display: none;
+            z-index: 2100;
         }
 
         .search-item {
-            padding: 12px 20px;
+            padding: 12px 18px;
             color: white;
             cursor: pointer;
-            border-bottom: 1px solid rgba(0, 255, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 255, 0, 0.12);
             transition: background 0.2s;
         }
 
         .search-item:hover {
-            background: rgba(0, 255, 0, 0.2);
+            background: rgba(0, 255, 0, 0.18);
             color: rgb(0, 255, 0);
+        }
+
+        #patec-text {
+            display: none;
+            position: absolute;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 92%;
+            color: rgba(0, 255, 0, 0.95);
+            text-align: center;
+            font-size: 18px;
+            line-height: 1.4;
+            letter-spacing: 0.6px;
+            padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(0, 255, 0, 0.18);
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.08);
+            z-index: 1900;
+        }
+
+        #kraje-odwiedzone {
+            display: none;
+            position: absolute;
+            top: 170px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(0, 255, 0, 0.9);
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(0, 255, 0, 0.18);
+            border-radius: 18px;
+            z-index: 1900;
         }
         #kontener-na-globus {
             position: absolute;
@@ -129,54 +173,6 @@
         #info-panel a {
             color: rgb(0, 255, 0);
             text-decoration: none;
-        }
-        #search-panel {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        #search-input {
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid rgb(0, 255, 0);
-            border-radius: 25px;
-            color: rgb(0, 255, 0);
-            padding: 10px 20px;
-            width: 300px;
-            font-size: 16px;
-            outline: none;
-            font-family: 'Trebuchet MS', sans-serif;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
-            transition: all 0.3s ease;
-        }
-        #search-input:focus {
-            box-shadow: 0 0 25px rgba(0, 255, 0, 0.5);
-            width: 350px;
-        }
-        #search-results {
-            background: rgba(0, 0, 0, 0.85);
-            border: 1px solid rgb(0, 255, 0);
-            width: 300px;
-            max-height: 200px;
-            overflow-y: auto;
-            display: none;
-            margin-top: 5px;
-            border-radius: 10px;
-        }
-        .search-item {
-            padding: 10px;
-            color: white;
-            cursor: pointer;
-            font-family: 'Trebuchet MS', sans-serif;
-            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
-        }
-        .search-item:hover {
-            background: rgba(0, 255, 0, 0.2);
-            color: rgb(0, 255, 0);
         }
         #close-panel {
             position: absolute;
@@ -238,23 +234,60 @@
 }
     /* Optymalizacja mobilna */
 @media (max-width: 768px) {
+    #top-panel {
+        justify-content: center;
+        padding: 14px 16px;
+    }
+
+    #patec-status {
+        width: 100%;
+        text-align: center;
+        font-size: 18px;
+        order: 1;
+    }
+
+    #search-container {
+        width: 100%;
+        max-width: 100%;
+        margin-left: 0;
+        order: 2;
+    }
+
+    #search-input {
+        width: 100%;
+        font-size: 15px;
+        padding: 12px 18px;
+    }
+
+    #search-results {
+        width: 100%;
+        position: relative;
+        top: 10px;
+    }
+
     #patec-text {
-        font-size: 22px; /* Mniejszy napis na górze */
+        display: block;
+        top: 125px;
+        font-size: 16px;
+        padding: 12px 16px;
     }
 
     #kraje-odwiedzone {
-        font-size: 16px;
-        top: 45px; /* Przesunięcie pod główny tytuł */
+        display: block;
+        top: 200px;
+        font-size: 13px;
+        width: 92%;
+        padding: 10px 14px;
     }
 
     #info-panel {
-        width: 100%; /* Panel na całą szerokość */
+        width: 100%;
         right: 0;
         top: auto;
-        bottom: 0; /* Panel pojawia się na dole */
-        border-radius: 20px 20px 0 0; /* Zaokrąglone tylko górne rogi */
-        max-height: 60%; /* Żeby nie zasłonił całego globusa */
-        box-sizing: border-box;
+        bottom: 0;
+        border-radius: 20px 20px 0 0;
+        max-height: 55%;
+        padding: 20px;
     }
 
     #social-kontener {
@@ -264,7 +297,7 @@
     }
 
     .instagram-tekst {
-        display: none; /* Ukrywamy tekst "Patec:" i "Autor:", zostawiamy same ikonki dla oszczędności miejsca */
+        display: none;
     }
 
     .przycisk-instagram {
@@ -282,13 +315,13 @@
             <input type="text" id="search-input" placeholder="Szukaj kraju..." autocomplete="off">
             <div id="search-results"></div>
         </div>
-
-        <div style="width: 200px;"></div> 
     </div>
 
-    <div id="patec-text"></div>
+    <div id="patec-text">
+        Mapa podróży Pateca — globus z odwiedzonymi krajami i szybka wyszukiwarka.
+    </div>
 
-    <div id="kraje-odwiedzone">PATEC ODWIEDZIŁ 68 Z 195 KRAJÓW</div>
+    <div id="kraje-odwiedzone">Patec odwiedził 68 z 195 krajów</div>
 
     <div id="info-panel">
         <button id="close-panel">×</button>
